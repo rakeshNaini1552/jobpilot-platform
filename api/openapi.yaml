@@ -1,0 +1,1249 @@
+openapi: 3.1.0
+info:
+  title: JobPilot Platform API
+  version: 1.0.0
+  description: >
+    AI-powered job search platform. Phase 3 design contract — becomes the
+    live FastAPI-generated spec in Phase 4. All endpoints require a Bearer
+    JWT unless tagged `auth` or `public`. Errors use RFC-7807 problem+json.
+servers:
+  - url: /api/v1
+
+security:
+  - bearerAuth: []
+
+tags:
+  - {name: auth, description: "Registration, login, tokens, OAuth"}
+  - {name: profile, description: "Current user, preferences, skills"}
+  - {name: resumes, description: "Resume upload, parsing, analysis"}
+  - {name: jobs, description: "Discovered jobs, search runs, export"}
+  - {name: matches, description: "AI match scores and explanations"}
+  - {name: applications, description: "ATS-style tracker"}
+  - {name: documents, description: "AI-generated resumes, letters, messages"}
+  - {name: assistant, description: "RAG chat assistant"}
+  - {name: analytics, description: "Dashboard metrics"}
+  - {name: admin, description: "Admin-only management"}
+  - {name: public, description: "Unauthenticated"}
+
+paths:
+  # ---------------------------------------------------------------- auth
+  /auth/register:
+    post:
+      tags: [auth]
+      security: []
+      operationId: register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password, full_name]
+              properties:
+                email: {type: string, format: email}
+                password: {type: string, minLength: 10}
+                full_name: {type: string}
+      responses:
+        "201": {description: Created, content: {application/json: {schema: {$ref: "#/components/schemas/TokenPair"}}}}
+        "409": {$ref: "#/components/responses/Problem"}
+  /auth/login:
+    post:
+      tags: [auth]
+      security: []
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: {type: string, format: email}
+                password: {type: string}
+      responses:
+        "200": {description: OK, content: {application/json: {schema: {$ref: "#/components/schemas/TokenPair"}}}}
+        "401": {$ref: "#/components/responses/Problem"}
+        "429": {$ref: "#/components/responses/Problem"}
+  /auth/refresh:
+    post:
+      tags: [auth]
+      security: []
+      operationId: refreshToken
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [refresh_token]
+              properties:
+                refresh_token: {type: string}
+      responses:
+        "200": {description: Rotated pair, content: {application/json: {schema: {$ref: "#/components/schemas/TokenPair"}}}}
+        "401": {$ref: "#/components/responses/Problem"}
+  /auth/logout:
+    post:
+      tags: [auth]
+      operationId: logout
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refresh_token: {type: string}
+      responses:
+        "204": {description: Logged out; refresh token revoked}
+  /auth/password/forgot:
+    post:
+      tags: [auth]
+      security: []
+      operationId: forgotPassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email: {type: string, format: email}
+      responses:
+        "202": {description: Reset email queued (always 202 to avoid enumeration)}
+  /auth/password/reset:
+    post:
+      tags: [auth]
+      security: []
+      operationId: resetPassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [token, new_password]
+              properties:
+                token: {type: string}
+                new_password: {type: string, minLength: 10}
+      responses:
+        "204": {description: Password changed; all sessions revoked}
+        "400": {$ref: "#/components/responses/Problem"}
+  /auth/oauth/{provider}/authorize:
+    get:
+      tags: [auth]
+      security: []
+      operationId: oauthAuthorize
+      parameters:
+        - {name: provider, in: path, required: true, schema: {type: string, enum: [google, github]}}
+      responses:
+        "302": {description: Redirect to provider consent screen}
+  /auth/oauth/{provider}/callback:
+    get:
+      tags: [auth]
+      security: []
+      operationId: oauthCallback
+      parameters:
+        - {name: provider, in: path, required: true, schema: {type: string, enum: [google, github]}}
+        - {name: code, in: query, required: true, schema: {type: string}}
+        - {name: state, in: query, required: true, schema: {type: string}}
+      responses:
+        "200": {description: OK, content: {application/json: {schema: {$ref: "#/components/schemas/TokenPair"}}}}
+
+  # ---------------------------------------------------------------- profile
+  /users/me:
+    get:
+      tags: [profile]
+      operationId: getMe
+      responses:
+        "200": {description: OK, content: {application/json: {schema: {$ref: "#/components/schemas/User"}}}}
+    patch:
+      tags: [profile]
+      operationId: updateMe
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                full_name: {type: string}
+                timezone: {type: string}
+      responses:
+        "200": {description: OK, content: {application/json: {schema: {$ref: "#/components/schemas/User"}}}}
+  /users/me/preferences:
+    get:
+      tags: [profile]
+      operationId: getPreferences
+      responses:
+        "200": {description: OK, content: {application/json: {schema: {$ref: "#/components/schemas/Preferences"}}}}
+    put:
+      tags: [profile]
+      operationId: putPreferences
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/Preferences"}
+      responses:
+        "200": {description: OK, content: {application/json: {schema: {$ref: "#/components/schemas/Preferences"}}}}
+  /users/me/skills:
+    get:
+      tags: [profile]
+      operationId: getSkills
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: "#/components/schemas/UserSkill"}
+    put:
+      tags: [profile]
+      operationId: putSkills
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items: {$ref: "#/components/schemas/UserSkill"}
+      responses:
+        "200": {description: Replaced}
+  /users/me/notification-settings:
+    get:
+      tags: [profile]
+      operationId: getNotificationSettings
+      responses:
+        "200": {description: OK, content: {application/json: {schema: {$ref: "#/components/schemas/NotificationSettings"}}}}
+    put:
+      tags: [profile]
+      operationId: putNotificationSettings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/NotificationSettings"}
+      responses:
+        "200": {description: OK}
+
+  # ---------------------------------------------------------------- resumes
+  /resumes:
+    get:
+      tags: [resumes]
+      operationId: listResumes
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: "#/components/schemas/Resume"}
+    post:
+      tags: [resumes]
+      operationId: uploadResume
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [name, file]
+              properties:
+                name: {type: string}
+                file: {type: string, format: binary}
+      responses:
+        "201": {description: Parsed + stored, content: {application/json: {schema: {$ref: "#/components/schemas/Resume"}}}}
+        "422": {$ref: "#/components/responses/Problem"}
+  /resumes/{resumeId}:
+    parameters: [{$ref: "#/components/parameters/resumeId"}]
+    get:
+      tags: [resumes]
+      operationId: getResume
+      responses:
+        "200": {description: OK, content: {application/json: {schema: {$ref: "#/components/schemas/Resume"}}}}
+        "404": {$ref: "#/components/responses/Problem"}
+    patch:
+      tags: [resumes]
+      operationId: updateResume
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: {type: string}
+                structured: {type: object}
+      responses:
+        "200": {description: OK}
+    delete:
+      tags: [resumes]
+      operationId: deleteResume
+      responses:
+        "204": {description: Deleted}
+  /resumes/{resumeId}/default:
+    post:
+      tags: [resumes]
+      operationId: setDefaultResume
+      parameters: [{$ref: "#/components/parameters/resumeId"}]
+      responses:
+        "204": {description: Now the default}
+  /resumes/{resumeId}/analysis:
+    get:
+      tags: [resumes]
+      operationId: analyzeResume
+      parameters: [{$ref: "#/components/parameters/resumeId"}]
+      responses:
+        "200":
+          description: AI analysis (ATS score, strengths, gaps, suggestions)
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/ResumeAnalysis"}
+  /resumes/{resumeId}/file:
+    get:
+      tags: [resumes]
+      operationId: downloadResume
+      parameters: [{$ref: "#/components/parameters/resumeId"}]
+      responses:
+        "200":
+          description: Original file
+          content:
+            application/octet-stream:
+              schema: {type: string, format: binary}
+
+  # ---------------------------------------------------------------- jobs
+  /jobs:
+    get:
+      tags: [jobs]
+      operationId: listJobs
+      parameters:
+        - {name: q, in: query, schema: {type: string}, description: Title keyword search}
+        - {name: employment, in: query, schema: {$ref: "#/components/schemas/EmploymentType"}}
+        - {name: arrangement, in: query, schema: {$ref: "#/components/schemas/ContractArrangement"}}
+        - {name: workplace, in: query, schema: {$ref: "#/components/schemas/WorkplaceType"}}
+        - {name: country, in: query, schema: {type: string, minLength: 2, maxLength: 2}}
+        - {name: city, in: query, schema: {type: string}}
+        - {name: sponsorship, in: query, schema: {$ref: "#/components/schemas/SponsorshipFlag"}}
+        - {name: min_salary, in: query, schema: {type: integer}}
+        - {name: posted_within_hours, in: query, schema: {type: integer, default: 168}}
+        - {name: connector_id, in: query, schema: {type: string}}
+        - {name: min_score, in: query, schema: {type: number}, description: Filter by my match score}
+        - {name: sort, in: query, schema: {type: string, enum: [posted_at, -posted_at, score, -score], default: -posted_at}}
+        - {$ref: "#/components/parameters/page"}
+        - {$ref: "#/components/parameters/size"}
+      responses:
+        "200": {description: OK, content: {application/json: {schema: {$ref: "#/components/schemas/JobPage"}}}}
+  /jobs/{jobId}:
+    get:
+      tags: [jobs]
+      operationId: getJob
+      parameters: [{$ref: "#/components/parameters/jobId"}]
+      responses:
+        "200": {description: Job + extraction + my score, content: {application/json: {schema: {$ref: "#/components/schemas/JobDetail"}}}}
+        "404": {$ref: "#/components/responses/Problem"}
+  /jobs/export:
+    get:
+      tags: [jobs]
+      operationId: exportJobs
+      description: CSV export of matched jobs for manual application (always available for SEARCH_LINK sources).
+      parameters:
+        - {name: min_score, in: query, schema: {type: number, default: 60}}
+        - {name: posted_within_hours, in: query, schema: {type: integer, default: 48}}
+      responses:
+        "200": {description: CSV, content: {text/csv: {schema: {type: string}}}}
+  /search-runs:
+    post:
+      tags: [jobs]
+      operationId: triggerSearchRun
+      description: On-demand ingestion using my saved preferences (async).
+      responses:
+        "202": {description: Queued, content: {application/json: {schema: {$ref: "#/components/schemas/SearchRun"}}}}
+        "409": {description: A run is already in progress, content: {application/problem+json: {schema: {$ref: "#/components/schemas/Problem"}}}}
+    get:
+      tags: [jobs]
+      operationId: listSearchRuns
+      parameters: [{$ref: "#/components/parameters/page"}, {$ref: "#/components/parameters/size"}]
+      responses:
+        "200": {description: OK, content: {application/json: {schema: {type: object, properties: {items: {type: array, items: {$ref: "#/components/schemas/SearchRun"}}, page: {type: integer}, size: {type: integer}, total: {type: integer}}}}}}
+  /search-runs/{runId}:
+    get:
+      tags: [jobs]
+      operationId: getSearchRun
+      parameters:
+        - {name: runId, in: path, required: true, schema: {type: string}}
+      responses:
+        "200": {description: OK, content: {application/json: {schema: {$ref: "#/components/schemas/SearchRun"}}}}
+
+  # ---------------------------------------------------------------- matches
+  /matches:
+    get:
+      tags: [matches]
+      operationId: listMatches
+      parameters:
+        - {name: min_score, in: query, schema: {type: number, default: 0}}
+        - {name: since, in: query, schema: {type: string, format: date-time}}
+        - {name: resume_id, in: query, schema: {type: string, format: uuid}}
+        - {$ref: "#/components/parameters/page"}
+        - {$ref: "#/components/parameters/size"}
+      responses:
+        "200": {description: Ranked matches, content: {application/json: {schema: {$ref: "#/components/schemas/MatchPage"}}}}
+  /jobs/{jobId}/match:
+    get:
+      tags: [matches]
+      operationId: getMatch
+      parameters: [{$ref: "#/components/parameters/jobId"}]
+      responses:
+        "200": {description: Full score breakdown + reasoning, content: {application/json: {schema: {$ref: "#/components/schemas/MatchScore"}}}}
+        "404": {$ref: "#/components/responses/Problem"}
+    post:
+      tags: [matches]
+      operationId: recomputeMatch
+      parameters: [{$ref: "#/components/parameters/jobId"}]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                resume_id: {type: string, format: uuid}
+      responses:
+        "202": {description: Recompute queued}
+
+  # ---------------------------------------------------------------- applications
+  /applications:
+    get:
+      tags: [applications]
+      operationId: listApplications
+      parameters:
+        - {name: status, in: query, schema: {$ref: "#/components/schemas/ApplicationStatus"}}
+        - {name: q, in: query, schema: {type: string}}
+        - {$ref: "#/components/parameters/page"}
+        - {$ref: "#/components/parameters/size"}
+      responses:
+        "200": {description: OK, content: {application/json: {schema: {$ref: "#/components/schemas/ApplicationPage"}}}}
+    post:
+      tags: [applications]
+      operationId: createApplication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [job_id]
+              properties:
+                job_id: {type: string, format: uuid}
+                status: {$ref: "#/components/schemas/ApplicationStatus"}
+                notes: {type: string}
+      responses:
+        "201": {description: Created, content: {application/json: {schema: {$ref: "#/components/schemas/Application"}}}}
+        "409": {description: Already tracked, content: {application/problem+json: {schema: {$ref: "#/components/schemas/Problem"}}}}
+  /applications/{applicationId}:
+    parameters: [{$ref: "#/components/parameters/applicationId"}]
+    get:
+      tags: [applications]
+      operationId: getApplication
+      responses:
+        "200": {description: OK, content: {application/json: {schema: {$ref: "#/components/schemas/ApplicationDetail"}}}}
+    patch:
+      tags: [applications]
+      operationId: updateApplication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                notes: {type: string}
+                salary_offered: {type: integer}
+                deadline_at: {type: string, format: date-time}
+                next_action_at: {type: string, format: date-time}
+                resume_id: {type: string, format: uuid}
+      responses:
+        "200": {description: OK}
+    delete:
+      tags: [applications]
+      operationId: deleteApplication
+      responses:
+        "204": {description: Soft-deleted}
+  /applications/{applicationId}/status:
+    post:
+      tags: [applications]
+      operationId: changeApplicationStatus
+      parameters: [{$ref: "#/components/parameters/applicationId"}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [to_status]
+              properties:
+                to_status: {$ref: "#/components/schemas/ApplicationStatus"}
+                note: {type: string}
+      responses:
+        "200": {description: Status changed; event recorded}
+  /applications/{applicationId}/events:
+    get:
+      tags: [applications]
+      operationId: listApplicationEvents
+      parameters: [{$ref: "#/components/parameters/applicationId"}]
+      responses:
+        "200":
+          description: Status history
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: "#/components/schemas/ApplicationEvent"}
+  /applications/{applicationId}/contacts:
+    post:
+      tags: [applications]
+      operationId: addApplicationContact
+      parameters: [{$ref: "#/components/parameters/applicationId"}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/ApplicationContact"}
+      responses:
+        "201": {description: Added}
+  /applications/{applicationId}/apply:
+    post:
+      tags: [applications]
+      operationId: autoApply
+      description: >
+        Trigger automated application. Only succeeds when the job's connector
+        compliance mode permits automation AND the user has opted in for that
+        site; otherwise 409 with the manual-apply link.
+      parameters: [{$ref: "#/components/parameters/applicationId"}]
+      responses:
+        "202": {description: Apply task queued}
+        "409": {description: Automation not permitted for this source, content: {application/problem+json: {schema: {$ref: "#/components/schemas/Problem"}}}}
+
+  # ---------------------------------------------------------------- documents
+  /documents:
+    get:
+      tags: [documents]
+      operationId: listDocuments
+      parameters:
+        - {name: job_id, in: query, schema: {type: string, format: uuid}}
+        - {name: doc_type, in: query, schema: {$ref: "#/components/schemas/DocumentType"}}
+        - {$ref: "#/components/parameters/page"}
+        - {$ref: "#/components/parameters/size"}
+      responses:
+        "200": {description: OK, content: {application/json: {schema: {type: object, properties: {items: {type: array, items: {$ref: "#/components/schemas/GeneratedDocument"}}, page: {type: integer}, size: {type: integer}, total: {type: integer}}}}}}
+    post:
+      tags: [documents]
+      operationId: generateDocument
+      description: Generate a tailored resume / cover letter / recruiter email / LinkedIn message / cold email for a job.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [job_id, doc_type]
+              properties:
+                job_id: {type: string, format: uuid}
+                doc_type: {$ref: "#/components/schemas/DocumentType"}
+                resume_id: {type: string, format: uuid, description: Defaults to the default resume}
+      responses:
+        "202": {description: Generation queued; poll the returned document id}
+  /documents/{documentId}:
+    get:
+      tags: [documents]
+      operationId: getDocument
+      parameters:
+        - {name: documentId, in: path, required: true, schema: {type: string, format: uuid}}
+      responses:
+        "200": {description: OK (status + content when ready), content: {application/json: {schema: {$ref: "#/components/schemas/GeneratedDocument"}}}}
+  /documents/{documentId}/file:
+    get:
+      tags: [documents]
+      operationId: downloadDocument
+      parameters:
+        - {name: documentId, in: path, required: true, schema: {type: string, format: uuid}}
+      responses:
+        "200": {description: Rendered docx/pdf, content: {application/octet-stream: {schema: {type: string, format: binary}}}}
+
+  # ---------------------------------------------------------------- assistant
+  /assistant/conversations:
+    get:
+      tags: [assistant]
+      operationId: listConversations
+      parameters: [{$ref: "#/components/parameters/page"}, {$ref: "#/components/parameters/size"}]
+      responses:
+        "200": {description: OK, content: {application/json: {schema: {type: object, properties: {items: {type: array, items: {$ref: "#/components/schemas/Conversation"}}, page: {type: integer}, size: {type: integer}, total: {type: integer}}}}}}
+    post:
+      tags: [assistant]
+      operationId: createConversation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title: {type: string}
+      responses:
+        "201": {description: Created, content: {application/json: {schema: {$ref: "#/components/schemas/Conversation"}}}}
+  /assistant/conversations/{conversationId}:
+    parameters:
+      - {name: conversationId, in: path, required: true, schema: {type: string, format: uuid}}
+    get:
+      tags: [assistant]
+      operationId: getConversation
+      responses:
+        "200": {description: Conversation with messages, content: {application/json: {schema: {$ref: "#/components/schemas/ConversationDetail"}}}}
+    delete:
+      tags: [assistant]
+      operationId: deleteConversation
+      responses:
+        "204": {description: Deleted}
+  /assistant/conversations/{conversationId}/messages:
+    post:
+      tags: [assistant]
+      operationId: sendMessage
+      description: >
+        Send a user message. Response is Server-Sent Events streaming
+        assistant tokens, tool-call notices, and a final message object.
+      parameters:
+        - {name: conversationId, in: path, required: true, schema: {type: string, format: uuid}}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [content]
+              properties:
+                content: {type: string}
+      responses:
+        "200": {description: SSE stream, content: {text/event-stream: {schema: {type: string}}}}
+
+  # ---------------------------------------------------------------- analytics
+  /analytics/dashboard:
+    get:
+      tags: [analytics]
+      operationId: getDashboard
+      description: Composite payload for the dashboard page (cached, refreshed nightly + on demand).
+      responses:
+        "200": {description: OK, content: {application/json: {schema: {$ref: "#/components/schemas/Dashboard"}}}}
+  /analytics/trends:
+    get:
+      tags: [analytics]
+      operationId: getTrends
+      parameters:
+        - {name: days, in: query, schema: {type: integer, default: 30}}
+      responses:
+        "200": {description: Hiring trends + tech demand over time, content: {application/json: {schema: {$ref: "#/components/schemas/Trends"}}}}
+
+  # ---------------------------------------------------------------- admin
+  /admin/ai/settings:
+    get:
+      tags: [admin]
+      operationId: getAiSettings
+      responses:
+        "200": {description: Provider chain + budgets (keys masked), content: {application/json: {schema: {$ref: "#/components/schemas/AiSettings"}}}}
+    put:
+      tags: [admin]
+      operationId: putAiSettings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/AiSettings"}
+      responses:
+        "200": {description: OK}
+  /admin/prompts:
+    get:
+      tags: [admin]
+      operationId: listPrompts
+      responses:
+        "200": {description: OK, content: {application/json: {schema: {type: array, items: {$ref: "#/components/schemas/Prompt"}}}}}
+    post:
+      tags: [admin]
+      operationId: createPromptVersion
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/Prompt"}
+      responses:
+        "201": {description: New version created}
+  /admin/prompts/{promptId}/activate:
+    post:
+      tags: [admin]
+      operationId: activatePrompt
+      parameters:
+        - {name: promptId, in: path, required: true, schema: {type: integer}}
+      responses:
+        "204": {description: This version is now active for its key}
+  /admin/connectors:
+    get:
+      tags: [admin]
+      operationId: listConnectors
+      responses:
+        "200": {description: OK, content: {application/json: {schema: {type: array, items: {$ref: "#/components/schemas/ConnectorSetting"}}}}}
+  /admin/connectors/{connectorId}:
+    patch:
+      tags: [admin]
+      operationId: updateConnector
+      parameters:
+        - {name: connectorId, in: path, required: true, schema: {type: string}}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                enabled: {type: boolean}
+                rate_limit_per_min: {type: integer}
+                config: {type: object}
+      responses:
+        "200": {description: OK}
+  /admin/watchlist:
+    get:
+      tags: [admin]
+      operationId: listWatchlist
+      responses:
+        "200": {description: OK, content: {application/json: {schema: {type: array, items: {$ref: "#/components/schemas/WatchlistEntry"}}}}}
+    post:
+      tags: [admin]
+      operationId: addWatchlistEntry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/WatchlistEntry"}
+      responses:
+        "201": {description: Added}
+  /admin/schedules:
+    get:
+      tags: [admin]
+      operationId: listSchedules
+      responses:
+        "200": {description: OK, content: {application/json: {schema: {type: array, items: {$ref: "#/components/schemas/ScheduledTask"}}}}}
+  /admin/schedules/{taskKey}:
+    patch:
+      tags: [admin]
+      operationId: updateSchedule
+      parameters:
+        - {name: taskKey, in: path, required: true, schema: {type: string}}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cron: {type: string}
+                enabled: {type: boolean}
+      responses:
+        "200": {description: OK}
+  /admin/schedules/{taskKey}/run:
+    post:
+      tags: [admin]
+      operationId: runScheduleNow
+      parameters:
+        - {name: taskKey, in: path, required: true, schema: {type: string}}
+      responses:
+        "202": {description: Triggered}
+  /admin/runs:
+    get:
+      tags: [admin]
+      operationId: listRuns
+      parameters:
+        - {name: task_key, in: query, schema: {type: string}}
+        - {$ref: "#/components/parameters/page"}
+        - {$ref: "#/components/parameters/size"}
+      responses:
+        "200": {description: Scheduler run history, content: {application/json: {schema: {type: object, properties: {items: {type: array, items: {$ref: "#/components/schemas/ScheduledRun"}}, page: {type: integer}, size: {type: integer}, total: {type: integer}}}}}}
+  /admin/users:
+    get:
+      tags: [admin]
+      operationId: listUsers
+      parameters: [{$ref: "#/components/parameters/page"}, {$ref: "#/components/parameters/size"}]
+      responses:
+        "200": {description: OK, content: {application/json: {schema: {type: object, properties: {items: {type: array, items: {$ref: "#/components/schemas/User"}}, page: {type: integer}, size: {type: integer}, total: {type: integer}}}}}}
+  /admin/audit-events:
+    get:
+      tags: [admin]
+      operationId: listAuditEvents
+      parameters:
+        - {name: user_id, in: query, schema: {type: string, format: uuid}}
+        - {name: event_type, in: query, schema: {type: string}}
+        - {$ref: "#/components/parameters/page"}
+        - {$ref: "#/components/parameters/size"}
+      responses:
+        "200": {description: OK, content: {application/json: {schema: {type: object, properties: {items: {type: array, items: {$ref: "#/components/schemas/AuditEvent"}}, page: {type: integer}, size: {type: integer}, total: {type: integer}}}}}}
+
+  # ---------------------------------------------------------------- public
+  /health:
+    get:
+      tags: [public]
+      security: []
+      operationId: health
+      responses:
+        "200": {description: Liveness}
+  /health/ready:
+    get:
+      tags: [public]
+      security: []
+      operationId: ready
+      responses:
+        "200": {description: DB + Redis reachable}
+        "503": {description: A dependency is down}
+
+# =============================================================================
+components:
+  securitySchemes:
+    bearerAuth: {type: http, scheme: bearer, bearerFormat: JWT}
+
+  parameters:
+    page: {name: page, in: query, schema: {type: integer, minimum: 1, default: 1}}
+    size: {name: size, in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 25}}
+    jobId: {name: jobId, in: path, required: true, schema: {type: string, format: uuid}}
+    resumeId: {name: resumeId, in: path, required: true, schema: {type: string, format: uuid}}
+    applicationId: {name: applicationId, in: path, required: true, schema: {type: string, format: uuid}}
+
+  responses:
+    Problem:
+      description: RFC-7807 problem
+      content:
+        application/problem+json:
+          schema: {$ref: "#/components/schemas/Problem"}
+
+  schemas:
+    Problem:
+      type: object
+      properties:
+        type: {type: string}
+        title: {type: string}
+        status: {type: integer}
+        detail: {type: string}
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              field: {type: string}
+              message: {type: string}
+
+    TokenPair:
+      type: object
+      required: [access_token, refresh_token, user]
+      properties:
+        access_token: {type: string}
+        refresh_token: {type: string}
+        expires_in: {type: integer, description: Access token TTL seconds}
+        user: {$ref: "#/components/schemas/User"}
+
+    User:
+      type: object
+      properties:
+        id: {type: string, format: uuid}
+        email: {type: string, format: email}
+        full_name: {type: string}
+        role: {type: string, enum: [USER, ADMIN]}
+        timezone: {type: string}
+        created_at: {type: string, format: date-time}
+
+    EmploymentType: {type: string, enum: [FULL_TIME, PART_TIME, CONTRACT, INTERNSHIP, TEMPORARY, UNKNOWN]}
+    ContractArrangement: {type: string, enum: [W2, C1099, C2C, UNSPECIFIED]}
+    WorkplaceType: {type: string, enum: [REMOTE, HYBRID, ONSITE, UNKNOWN]}
+    SponsorshipFlag: {type: string, enum: [SPONSOR_FRIENDLY, NO_SPONSOR, UNKNOWN]}
+    SeniorityLevel: {type: string, enum: [ENTRY, MID, SENIOR, LEAD, PRINCIPAL, UNKNOWN]}
+    ApplicationStatus:
+      type: string
+      enum: [SAVED, INTERESTED, RESUME_GENERATED, APPLIED, RECRUITER_CONTACTED,
+             OA_RECEIVED, INTERVIEW_SCHEDULED, REJECTED, OFFER, ACCEPTED, DECLINED]
+    DocumentType: {type: string, enum: [TAILORED_RESUME, COVER_LETTER, RECRUITER_EMAIL, LINKEDIN_MESSAGE, COLD_EMAIL]}
+
+    Preferences:
+      type: object
+      properties:
+        desired_titles: {type: array, items: {type: string}}
+        employment_types: {type: array, items: {$ref: "#/components/schemas/EmploymentType"}}
+        contract_arrangements: {type: array, items: {$ref: "#/components/schemas/ContractArrangement"}}
+        workplace_types: {type: array, items: {$ref: "#/components/schemas/WorkplaceType"}}
+        locations:
+          type: array
+          items:
+            type: object
+            properties:
+              city: {type: string}
+              state: {type: string}
+              country: {type: string}
+              radius_mi: {type: integer}
+        countries: {type: array, items: {type: string}}
+        seniority: {$ref: "#/components/schemas/SeniorityLevel"}
+        years_experience: {type: number}
+        visa_status: {type: string}
+        work_authorization: {type: string}
+        needs_sponsorship: {type: boolean}
+        open_to_staffing: {type: boolean}
+        salary_min: {type: integer}
+        salary_max: {type: integer}
+        salary_currency: {type: string}
+        availability_date: {type: string, format: date}
+        notice_period_days: {type: integer}
+        auto_apply_enabled: {type: boolean}
+        auto_apply_min_score: {type: number}
+        auto_apply_daily_cap: {type: integer}
+
+    UserSkill:
+      type: object
+      required: [name]
+      properties:
+        name: {type: string}
+        category: {type: string}
+        years: {type: number}
+        proficiency: {type: integer, minimum: 1, maximum: 5}
+
+    NotificationSettings:
+      type: object
+      properties:
+        email_enabled: {type: boolean}
+        daily_report_hour: {type: integer, minimum: 0, maximum: 23}
+        slack_webhook: {type: string, description: Write-only; returned masked}
+        discord_webhook: {type: string, description: Write-only; returned masked}
+
+    Resume:
+      type: object
+      properties:
+        id: {type: string, format: uuid}
+        name: {type: string}
+        is_default: {type: boolean}
+        mime_type: {type: string}
+        structured: {type: object, description: Parsed sections/experience/skills}
+        created_at: {type: string, format: date-time}
+        updated_at: {type: string, format: date-time}
+
+    ResumeAnalysis:
+      type: object
+      properties:
+        ats_score: {type: number}
+        strengths: {type: array, items: {type: string}}
+        gaps: {type: array, items: {type: string}}
+        suggestions: {type: array, items: {type: string}}
+        keyword_coverage: {type: object, additionalProperties: {type: boolean}}
+
+    Company:
+      type: object
+      properties:
+        id: {type: string, format: uuid}
+        name: {type: string}
+        website: {type: string}
+        is_staffing_firm: {type: boolean}
+        ats_type: {type: string}
+
+    Job:
+      type: object
+      properties:
+        id: {type: string, format: uuid}
+        title: {type: string}
+        company: {$ref: "#/components/schemas/Company"}
+        connector_id: {type: string}
+        url: {type: string}
+        location_text: {type: string}
+        workplace: {$ref: "#/components/schemas/WorkplaceType"}
+        employment: {$ref: "#/components/schemas/EmploymentType"}
+        arrangement: {$ref: "#/components/schemas/ContractArrangement"}
+        salary_min: {type: integer}
+        salary_max: {type: integer}
+        salary_currency: {type: string}
+        posted_at: {type: string, format: date-time}
+        my_score: {type: number, description: Convenience copy of overall match score}
+        sponsorship: {$ref: "#/components/schemas/SponsorshipFlag"}
+
+    JobDetail:
+      allOf:
+        - {$ref: "#/components/schemas/Job"}
+        - type: object
+          properties:
+            description_md: {type: string}
+            extraction: {$ref: "#/components/schemas/JobExtraction"}
+            match: {$ref: "#/components/schemas/MatchScore"}
+            application_id: {type: string, format: uuid, description: Present if already tracked}
+
+    JobExtraction:
+      type: object
+      properties:
+        skills: {type: array, items: {type: string}}
+        tech_stack: {type: array, items: {type: string}}
+        responsibilities: {type: array, items: {type: string}}
+        benefits: {type: array, items: {type: string}}
+        sponsorship: {$ref: "#/components/schemas/SponsorshipFlag"}
+        seniority: {$ref: "#/components/schemas/SeniorityLevel"}
+        recruiter_name: {type: string}
+        recruiter_contact: {type: string}
+        method: {type: string, enum: [LLM, HEURISTIC, MIXED]}
+
+    MatchScore:
+      type: object
+      properties:
+        job_id: {type: string, format: uuid}
+        resume_id: {type: string, format: uuid}
+        overall: {type: number}
+        ats_pct: {type: number}
+        resume_pct: {type: number}
+        salary_score: {type: number}
+        location_score: {type: number}
+        visa_score: {type: number}
+        skill_gap:
+          type: array
+          items:
+            type: object
+            properties:
+              skill: {type: string}
+              required: {type: boolean}
+              have: {type: boolean}
+        reasoning: {type: string}
+        created_at: {type: string, format: date-time}
+
+    Match:
+      type: object
+      properties:
+        job: {$ref: "#/components/schemas/Job"}
+        score: {$ref: "#/components/schemas/MatchScore"}
+
+    Application:
+      type: object
+      properties:
+        id: {type: string, format: uuid}
+        job: {$ref: "#/components/schemas/Job"}
+        status: {$ref: "#/components/schemas/ApplicationStatus"}
+        method: {type: string, enum: [MANUAL, API, AUTOMATED_FORM, EMAIL, REFERRAL]}
+        applied_at: {type: string, format: date-time}
+        deadline_at: {type: string, format: date-time}
+        next_action_at: {type: string, format: date-time}
+        salary_offered: {type: integer}
+        notes: {type: string}
+        created_at: {type: string, format: date-time}
+        updated_at: {type: string, format: date-time}
+
+    ApplicationDetail:
+      allOf:
+        - {$ref: "#/components/schemas/Application"}
+        - type: object
+          properties:
+            events: {type: array, items: {$ref: "#/components/schemas/ApplicationEvent"}}
+            contacts: {type: array, items: {$ref: "#/components/schemas/ApplicationContact"}}
+            documents: {type: array, items: {$ref: "#/components/schemas/GeneratedDocument"}}
+
+    ApplicationEvent:
+      type: object
+      properties:
+        from_status: {$ref: "#/components/schemas/ApplicationStatus"}
+        to_status: {$ref: "#/components/schemas/ApplicationStatus"}
+        actor: {type: string, enum: [USER, SYSTEM, ASSISTANT]}
+        note: {type: string}
+        created_at: {type: string, format: date-time}
+
+    ApplicationContact:
+      type: object
+      properties:
+        id: {type: string, format: uuid}
+        recruiter_id: {type: string, format: uuid}
+        role: {type: string}
+        email: {type: string}
+        notes: {type: string}
+
+    GeneratedDocument:
+      type: object
+      properties:
+        id: {type: string, format: uuid}
+        job_id: {type: string, format: uuid}
+        application_id: {type: string, format: uuid}
+        doc_type: {$ref: "#/components/schemas/DocumentType"}
+        status: {type: string, enum: [PENDING, READY, FAILED]}
+        content_md: {type: string}
+        has_file: {type: boolean}
+        model: {type: string}
+        created_at: {type: string, format: date-time}
+
+    Conversation:
+      type: object
+      properties:
+        id: {type: string, format: uuid}
+        title: {type: string}
+        created_at: {type: string, format: date-time}
+        updated_at: {type: string, format: date-time}
+
+    ConversationDetail:
+      allOf:
+        - {$ref: "#/components/schemas/Conversation"}
+        - type: object
+          properties:
+            messages: {type: array, items: {$ref: "#/components/schemas/Message"}}
+
+    Message:
+      type: object
+      properties:
+        id: {type: string, format: uuid}
+        role: {type: string, enum: [USER, ASSISTANT, SYSTEM, TOOL]}
+        content: {type: string}
+        tool_calls: {type: array, items: {type: object}}
+        created_at: {type: string, format: date-time}
+
+    SearchRun:
+      type: object
+      properties:
+        id: {type: string}
+        status: {type: string, enum: [RUNNING, SUCCESS, FAILED, PARTIAL]}
+        started_at: {type: string, format: date-time}
+        finished_at: {type: string, format: date-time}
+        stats:
+          type: object
+          properties:
+            jobs_found: {type: integer}
+            jobs_new: {type: integer}
+            jobs_scored: {type: integer}
+            connectors_failed: {type: array, items: {type: string}}
+
+    Dashboard:
+      type: object
+      properties:
+        jobs_found: {type: integer}
+        jobs_applied: {type: integer}
+        interviews: {type: integer}
+        rejections: {type: integer}
+        offers: {type: integer}
+        success_rate: {type: number}
+        recruiter_response_rate: {type: number}
+        applications_by_week:
+          type: array
+          items: {type: object, properties: {week: {type: string}, count: {type: integer}}}
+        applications_by_company:
+          type: array
+          items: {type: object, properties: {company: {type: string}, count: {type: integer}}}
+        match_score_distribution:
+          type: array
+          items: {type: object, properties: {bucket: {type: string}, count: {type: integer}}}
+        salary_distribution:
+          type: array
+          items: {type: object, properties: {bucket: {type: string}, count: {type: integer}}}
+        funnel:
+          type: array
+          items: {type: object, properties: {status: {$ref: "#/components/schemas/ApplicationStatus"}, count: {type: integer}}}
+        ai_suggestions: {type: array, items: {type: string}}
+        top_matches: {type: array, items: {$ref: "#/components/schemas/Match"}}
+
+    Trends:
+      type: object
+      properties:
+        postings_per_day:
+          type: array
+          items: {type: object, properties: {date: {type: string, format: date}, count: {type: integer}}}
+        booming_companies:
+          type: array
+          items:
+            type: object
+            properties:
+              company: {type: string}
+              recent: {type: integer}
+              previous: {type: integer}
+              growth_pct: {type: number}
+        tech_demand:
+          type: array
+          items: {type: object, properties: {skill: {type: string}, count: {type: integer}, trend_pct: {type: number}}}
+
+    AiSettings:
+      type: object
+      properties:
+        provider_chain: {type: array, items: {type: string, enum: [OLLAMA, OPENROUTER, GEMINI, ANTHROPIC, OPENAI]}}
+        daily_token_budget: {type: integer}
+        keys:
+          type: object
+          description: Write-only values; GET returns masked (sk-***)
+          additionalProperties: {type: string}
+        ollama_base_url: {type: string}
+
+    Prompt:
+      type: object
+      properties:
+        id: {type: integer}
+        key: {type: string}
+        version: {type: integer}
+        template: {type: string}
+        variables_schema: {type: object}
+        active: {type: boolean}
+
+    ConnectorSetting:
+      type: object
+      properties:
+        connector_id: {type: string}
+        display_name: {type: string}
+        compliance_mode: {type: string, enum: [OFFICIAL_API, PUBLIC_FEED, SEARCH_LINK, USER_AUTHORIZED_AUTOMATION]}
+        enabled: {type: boolean}
+        rate_limit_per_min: {type: integer}
+        healthy: {type: boolean}
+        last_success_at: {type: string, format: date-time}
+
+    WatchlistEntry:
+      type: object
+      properties:
+        id: {type: string, format: uuid}
+        company_name: {type: string}
+        connector_id: {type: string}
+        config: {type: object, description: "Connector-specific, e.g. ATS slug"}
+        enabled: {type: boolean}
+
+    ScheduledTask:
+      type: object
+      properties:
+        key: {type: string}
+        cron: {type: string}
+        timezone: {type: string}
+        enabled: {type: boolean}
+        description: {type: string}
+
+    ScheduledRun:
+      type: object
+      properties:
+        id: {type: integer}
+        task_key: {type: string}
+        status: {type: string, enum: [RUNNING, SUCCESS, FAILED, PARTIAL]}
+        started_at: {type: string, format: date-time}
+        finished_at: {type: string, format: date-time}
+        stats: {type: object}
+        error: {type: string}
+
+    AuditEvent:
+      type: object
+      properties:
+        id: {type: integer}
+        user_id: {type: string, format: uuid}
+        actor: {type: string, enum: [USER, SYSTEM, ASSISTANT]}
+        event_type: {type: string}
+        entity_type: {type: string}
+        entity_id: {type: string}
+        detail: {type: object}
+        created_at: {type: string, format: date-time}
+
+    JobPage:
+      type: object
+      properties:
+        items: {type: array, items: {$ref: "#/components/schemas/Job"}}
+        page: {type: integer}
+        size: {type: integer}
+        total: {type: integer}
+
+    MatchPage:
+      type: object
+      properties:
+        items: {type: array, items: {$ref: "#/components/schemas/Match"}}
+        page: {type: integer}
+        size: {type: integer}
+        total: {type: integer}
+
+    ApplicationPage:
+      type: object
+      properties:
+        items: {type: array, items: {$ref: "#/components/schemas/Application"}}
+        page: {type: integer}
+        size: {type: integer}
+        total: {type: integer}
