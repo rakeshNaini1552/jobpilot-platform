@@ -1,2 +1,5 @@
-"""Public facade of the ai module — the ONLY import surface for other
-modules (enforced by import-linter). Implemented in its feature phase."""
+"""Public facade of the ai module."""
+from .extraction import Extraction, extract
+from .gateway import AiGateway, AiUnavailable, ChatResult
+
+__all__ = ["AiGateway", "AiUnavailable", "ChatResult", "Extraction", "extract"]

@@ -113,9 +113,10 @@ def _truncate_all() -> None:
     engine = create_engine(os.environ["JOBPILOT_DATABASE_URL"])  # keep psycopg3 driver
     tables = ["company_watchlist", "job_extractions", "match_scores",
               "generated_documents", "application_events", "application_contacts",
-              "applications", "jobs", "companies", "scheduled_runs",
-              "audit_events", "refresh_tokens", "password_reset_tokens",
-              "oauth_accounts", "preferences", "users"]
+              "applications", "ai_messages", "ai_conversations",
+              "resume_chunks", "resumes", "jobs", "companies",
+              "scheduled_runs", "audit_events", "refresh_tokens",
+              "password_reset_tokens", "oauth_accounts", "preferences", "users"]
     with engine.begin() as conn:
         for table in tables:
             conn.execute(text(f"DELETE FROM {table};"))

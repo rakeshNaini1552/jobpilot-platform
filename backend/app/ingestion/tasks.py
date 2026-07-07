@@ -38,6 +38,7 @@ def _run_ingestion(task_key: str, hours: int, limit: int) -> dict:
     totals = {"jobs_found": 0, "jobs_new": 0, "users": 0}
     error = None
     try:
+        from app.matching.service import score_jobs_for_user
         with worker_session() as session:
             users = session.scalars(select(User).where(User.is_active.is_(True))).all()
             for user in users:
@@ -45,6 +46,7 @@ def _run_ingestion(task_key: str, hours: int, limit: int) -> dict:
                 totals["jobs_found"] += res.jobs_found
                 totals["jobs_new"] += res.jobs_new
                 totals["users"] += 1
+                score_jobs_for_user(session, user.id, res.new_job_ids)
         status = "SUCCESS"
     except Exception as e:  # noqa: BLE001
         error, status = str(e)[:500], "FAILED"
@@ -75,9 +77,11 @@ def run_ingestion_for_user(user_id: str, hours: int = 24, limit: int = 50) -> di
     error, status = None, "SUCCESS"
     stats: dict = {}
     try:
+        from app.matching.service import score_jobs_for_user
         with worker_session() as session:
             res = ingest_for_user(session, user_id, hours=hours, limit=limit)
             stats = res.as_dict()
+            stats["scored"] = score_jobs_for_user(session, user_id, res.new_job_ids)
     except Exception as e:  # noqa: BLE001
         error, status = str(e)[:500], "FAILED"
     with worker_session() as session:

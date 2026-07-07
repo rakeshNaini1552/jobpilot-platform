@@ -24,6 +24,7 @@ log = structlog.get_logger("ingestion")
 class IngestionResult:
     jobs_found: int = 0
     jobs_new: int = 0
+    new_job_ids: list = field(default_factory=list)
     connectors_run: list[str] = field(default_factory=list)
     connectors_failed: list[str] = field(default_factory=list)
 
@@ -100,9 +101,10 @@ def _run_connector(session: Session, connector_id: str, query: JobQuery,
         if not posting.title or not posting.url:
             continue
         result.jobs_found += 1
-        _, is_new = upsert_job(session, posting)
+        job, is_new = upsert_job(session, posting)
         if is_new:
             result.jobs_new += 1
+            result.new_job_ids.append(job.id)
 
 
 def ingest_for_user(session: Session, user_id, *, hours: int = 24,
