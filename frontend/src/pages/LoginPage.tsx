@@ -20,7 +20,7 @@ export default function LoginPage() {
     e.preventDefault();
     setBusy(true);
     setError(null);
-    const { data, error: err } = await api.POST("/auth/login", {
+    const { data, error: err } = await api.POST("/api/v1/auth/login", {
       body: { email, password },
     });
     setBusy(false);

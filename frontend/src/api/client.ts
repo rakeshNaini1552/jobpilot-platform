@@ -64,5 +64,6 @@ const authMiddleware: Middleware = {
   },
 };
 
-export const api = createClient<paths>({ baseUrl: "/api/v1" });
+// Paths in the generated schema are absolute (/api/v1/...), so no baseUrl prefix.
+export const api = createClient<paths>({ baseUrl: "/" });
 api.use(authMiddleware);

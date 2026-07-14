@@ -4,7 +4,41 @@
  */
 
 export interface paths {
-    "/auth/register": {
+    "/api/v1/health": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Health */
+        get: operations["health_api_v1_health_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/health/ready": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ready */
+        get: operations["ready_api_v1_health_ready_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/register": {
         parameters: {
             query?: never;
             header?: never;
@@ -13,14 +47,15 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["register"];
+        /** Register */
+        post: operations["register_api_v1_auth_register_post"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/auth/login": {
+    "/api/v1/auth/login": {
         parameters: {
             query?: never;
             header?: never;
@@ -29,14 +64,15 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["login"];
+        /** Login */
+        post: operations["login_api_v1_auth_login_post"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/auth/refresh": {
+    "/api/v1/auth/refresh": {
         parameters: {
             query?: never;
             header?: never;
@@ -45,14 +81,15 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["refreshToken"];
+        /** Refresh */
+        post: operations["refresh_api_v1_auth_refresh_post"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/auth/logout": {
+    "/api/v1/auth/logout": {
         parameters: {
             query?: never;
             header?: never;
@@ -61,14 +98,15 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["logout"];
+        /** Logout */
+        post: operations["logout_api_v1_auth_logout_post"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/auth/password/forgot": {
+    "/api/v1/auth/password/forgot": {
         parameters: {
             query?: never;
             header?: never;
@@ -77,14 +115,15 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["forgotPassword"];
+        /** Forgot Password */
+        post: operations["forgot_password_api_v1_auth_password_forgot_post"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/auth/password/reset": {
+    "/api/v1/auth/password/reset": {
         parameters: {
             query?: never;
             header?: never;
@@ -93,21 +132,23 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["resetPassword"];
+        /** Reset Password */
+        post: operations["reset_password_api_v1_auth_password_reset_post"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/auth/oauth/{provider}/authorize": {
+    "/api/v1/auth/oauth/{provider}/authorize": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["oauthAuthorize"];
+        /** Oauth Authorize */
+        get: operations["oauth_authorize_api_v1_auth_oauth__provider__authorize_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -116,14 +157,15 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/auth/oauth/{provider}/callback": {
+    "/api/v1/auth/oauth/{provider}/callback": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["oauthCallback"];
+        /** Oauth Callback */
+        get: operations["oauth_callback_api_v1_auth_oauth__provider__callback_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -132,31 +174,35 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/users/me": {
+    "/api/v1/users/me": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["getMe"];
+        /** Get Me */
+        get: operations["get_me_api_v1_users_me_get"];
         put?: never;
         post?: never;
         delete?: never;
         options?: never;
         head?: never;
-        patch: operations["updateMe"];
+        /** Update Me */
+        patch: operations["update_me_api_v1_users_me_patch"];
         trace?: never;
     };
-    "/users/me/preferences": {
+    "/api/v1/users/me/preferences": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["getPreferences"];
-        put: operations["putPreferences"];
+        /** Get Preferences */
+        get: operations["get_preferences_api_v1_users_me_preferences_get"];
+        /** Put Preferences */
+        put: operations["put_preferences_api_v1_users_me_preferences_put"];
         post?: never;
         delete?: never;
         options?: never;
@@ -164,73 +210,43 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/users/me/skills": {
+    "/api/v1/resumes": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["getSkills"];
-        put: operations["putSkills"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/users/me/notification-settings": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getNotificationSettings"];
-        put: operations["putNotificationSettings"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/resumes": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["listResumes"];
+        /** List Resumes */
+        get: operations["list_resumes_api_v1_resumes_get"];
         put?: never;
-        post: operations["uploadResume"];
+        /** Upload Resume */
+        post: operations["upload_resume_api_v1_resumes_post"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/resumes/{resumeId}": {
+    "/api/v1/resumes/{resume_id}": {
         parameters: {
             query?: never;
             header?: never;
-            path: {
-                resumeId: components["parameters"]["resumeId"];
-            };
+            path?: never;
             cookie?: never;
         };
-        get: operations["getResume"];
+        /** Get Resume */
+        get: operations["get_resume_api_v1_resumes__resume_id__get"];
         put?: never;
         post?: never;
-        delete: operations["deleteResume"];
+        /** Delete Resume */
+        delete: operations["delete_resume_api_v1_resumes__resume_id__delete"];
         options?: never;
         head?: never;
-        patch: operations["updateResume"];
+        patch?: never;
         trace?: never;
     };
-    "/resumes/{resumeId}/default": {
+    "/api/v1/resumes/{resume_id}/default": {
         parameters: {
             query?: never;
             header?: never;
@@ -239,21 +255,26 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["setDefaultResume"];
+        /** Set Default */
+        post: operations["set_default_api_v1_resumes__resume_id__default_post"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/resumes/{resumeId}/analysis": {
+    "/api/v1/resumes/{resume_id}/analysis": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["analyzeResume"];
+        /**
+         * Analyze Resume
+         * @description Deterministic ATS checks; AI suggestions layered on when available.
+         */
+        get: operations["analyze_resume_api_v1_resumes__resume_id__analysis_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -262,14 +283,15 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/resumes/{resumeId}/file": {
+    "/api/v1/jobs": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["downloadResume"];
+        /** List Jobs */
+        get: operations["list_jobs_api_v1_jobs_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -278,14 +300,15 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/jobs": {
+    "/api/v1/jobs/export": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["listJobs"];
+        /** Export Jobs */
+        get: operations["export_jobs_api_v1_jobs_export_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -294,139 +317,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/jobs/{jobId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getJob"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/jobs/export": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description CSV export of matched jobs for manual application (always available for SEARCH_LINK sources). */
-        get: operations["exportJobs"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/search-runs": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["listSearchRuns"];
-        put?: never;
-        /** @description On-demand ingestion using my saved preferences (async). */
-        post: operations["triggerSearchRun"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/search-runs/{runId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getSearchRun"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/matches": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["listMatches"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/jobs/{jobId}/match": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getMatch"];
-        put?: never;
-        post: operations["recomputeMatch"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/applications": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["listApplications"];
-        put?: never;
-        post: operations["createApplication"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/applications/{applicationId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                applicationId: components["parameters"]["applicationId"];
-            };
-            cookie?: never;
-        };
-        get: operations["getApplication"];
-        put?: never;
-        post?: never;
-        delete: operations["deleteApplication"];
-        options?: never;
-        head?: never;
-        patch: operations["updateApplication"];
-        trace?: never;
-    };
-    "/applications/{applicationId}/status": {
+    "/api/v1/search-runs": {
         parameters: {
             query?: never;
             header?: never;
@@ -435,21 +326,23 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["changeApplicationStatus"];
+        /** Trigger Search Run */
+        post: operations["trigger_search_run_api_v1_search_runs_post"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/applications/{applicationId}/events": {
+    "/api/v1/search-runs/{run_id}": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["listApplicationEvents"];
+        /** Get Search Run */
+        get: operations["get_search_run_api_v1_search_runs__run_id__get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -458,7 +351,78 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/applications/{applicationId}/contacts": {
+    "/api/v1/matches": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Matches */
+        get: operations["list_matches_api_v1_matches_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/jobs/{job_id}/match": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Match */
+        get: operations["get_match_api_v1_jobs__job_id__match_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/applications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Applications */
+        get: operations["list_applications_api_v1_applications_get"];
+        put?: never;
+        /** Create Application */
+        post: operations["create_application_api_v1_applications_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/applications/{application_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Application */
+        get: operations["get_application_api_v1_applications__application_id__get"];
+        put?: never;
+        post?: never;
+        /** Delete Application */
+        delete: operations["delete_application_api_v1_applications__application_id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Application */
+        patch: operations["update_application_api_v1_applications__application_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/applications/{application_id}/status": {
         parameters: {
             query?: never;
             header?: never;
@@ -467,14 +431,68 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["addApplicationContact"];
+        /** Change Status */
+        post: operations["change_status_api_v1_applications__application_id__status_post"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/applications/{applicationId}/apply": {
+    "/api/v1/applications/{application_id}/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Events */
+        get: operations["list_events_api_v1_applications__application_id__events_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/assistant/conversations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Conversations */
+        get: operations["list_conversations_api_v1_assistant_conversations_get"];
+        put?: never;
+        /** Create Conversation */
+        post: operations["create_conversation_api_v1_assistant_conversations_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/assistant/conversations/{conversation_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Conversation */
+        get: operations["get_conversation_api_v1_assistant_conversations__conversation_id__get"];
+        put?: never;
+        post?: never;
+        /** Delete Conversation */
+        delete: operations["delete_conversation_api_v1_assistant_conversations__conversation_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/assistant/conversations/{conversation_id}/messages": {
         parameters: {
             query?: never;
             header?: never;
@@ -483,39 +501,23 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description Trigger automated application. Only succeeds when the job's connector compliance mode permits automation AND the user has opted in for that site; otherwise 409 with the manual-apply link. */
-        post: operations["autoApply"];
+        /** Send Message */
+        post: operations["send_message_api_v1_assistant_conversations__conversation_id__messages_post"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/documents": {
+    "/api/v1/analytics/dashboard": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["listDocuments"];
-        put?: never;
-        /** @description Generate a tailored resume / cover letter / recruiter email / LinkedIn message / cold email for a job. */
-        post: operations["generateDocument"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/documents/{documentId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getDocument"];
+        /** Get Dashboard */
+        get: operations["get_dashboard_api_v1_analytics_dashboard_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -524,322 +526,15 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/documents/{documentId}/file": {
+    "/api/v1/analytics/trends": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["downloadDocument"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/assistant/conversations": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["listConversations"];
-        put?: never;
-        post: operations["createConversation"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/assistant/conversations/{conversationId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                conversationId: string;
-            };
-            cookie?: never;
-        };
-        get: operations["getConversation"];
-        put?: never;
-        post?: never;
-        delete: operations["deleteConversation"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/assistant/conversations/{conversationId}/messages": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** @description Send a user message. Response is Server-Sent Events streaming assistant tokens, tool-call notices, and a final message object. */
-        post: operations["sendMessage"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/analytics/dashboard": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description Composite payload for the dashboard page (cached, refreshed nightly + on demand). */
-        get: operations["getDashboard"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/analytics/trends": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getTrends"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/ai/settings": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["getAiSettings"];
-        put: operations["putAiSettings"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/prompts": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["listPrompts"];
-        put?: never;
-        post: operations["createPromptVersion"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/prompts/{promptId}/activate": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["activatePrompt"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/connectors": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["listConnectors"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/connectors/{connectorId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch: operations["updateConnector"];
-        trace?: never;
-    };
-    "/admin/watchlist": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["listWatchlist"];
-        put?: never;
-        post: operations["addWatchlistEntry"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/schedules": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["listSchedules"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/schedules/{taskKey}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch: operations["updateSchedule"];
-        trace?: never;
-    };
-    "/admin/schedules/{taskKey}/run": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["runScheduleNow"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/runs": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["listRuns"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/users": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["listUsers"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/audit-events": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["listAuditEvents"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/health": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["health"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/health/ready": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["ready"];
+        /** Get Trends */
+        get: operations["get_trends_api_v1_analytics_trends_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -852,445 +547,798 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        Problem: {
-            type?: string;
-            title?: string;
-            status?: number;
-            detail?: string;
-            errors?: {
-                field?: string;
-                message?: string;
-            }[];
+        /** ApplicationEventOut */
+        ApplicationEventOut: {
+            /** From Status */
+            from_status?: string | null;
+            /** To Status */
+            to_status: string;
+            /** Actor */
+            actor: string;
+            /** Note */
+            note?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
         };
-        TokenPair: {
-            access_token: string;
+        /** ApplicationOut */
+        ApplicationOut: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            job: components["schemas"]["JobOut"];
+            /** Status */
+            status: string;
+            /** Method */
+            method?: string | null;
+            /** Applied At */
+            applied_at?: string | null;
+            /** Deadline At */
+            deadline_at?: string | null;
+            /** Next Action At */
+            next_action_at?: string | null;
+            /** Salary Offered */
+            salary_offered?: number | null;
+            /** Notes */
+            notes?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+        };
+        /** ApplicationPage */
+        ApplicationPage: {
+            /** Items */
+            items: components["schemas"]["ApplicationOut"][];
+            /** Page */
+            page: number;
+            /** Size */
+            size: number;
+            /** Total */
+            total: number;
+        };
+        /** AssistantReplyOut */
+        AssistantReplyOut: {
+            /** Content */
+            content: string;
+            /** Action */
+            action?: string | null;
+            /** Model */
+            model?: string | null;
+        };
+        /** Body_upload_resume_api_v1_resumes_post */
+        Body_upload_resume_api_v1_resumes_post: {
+            /** File */
+            file: string;
+        };
+        /** BoomingCompany */
+        BoomingCompany: {
+            /** Company */
+            company: string;
+            /** Recent */
+            recent: number;
+            /** Previous */
+            previous: number;
+            /** Growth Pct */
+            growth_pct: number;
+        };
+        /** BucketCount */
+        BucketCount: {
+            /** Bucket */
+            bucket: string;
+            /** Count */
+            count: number;
+        };
+        /** ChangeStatusIn */
+        ChangeStatusIn: {
+            /**
+             * To Status
+             * @enum {string}
+             */
+            to_status: "SAVED" | "INTERESTED" | "RESUME_GENERATED" | "APPLIED" | "RECRUITER_CONTACTED" | "OA_RECEIVED" | "INTERVIEW_SCHEDULED" | "REJECTED" | "OFFER" | "ACCEPTED" | "DECLINED";
+            /** Note */
+            note?: string | null;
+        };
+        /** CompanyCount */
+        CompanyCount: {
+            /** Company */
+            company: string;
+            /** Count */
+            count: number;
+        };
+        /** ConversationDetail */
+        ConversationDetail: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Title */
+            title?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /**
+             * Messages
+             * @default []
+             */
+            messages: components["schemas"]["MessageOut"][];
+        };
+        /** ConversationOut */
+        ConversationOut: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Title */
+            title?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+        };
+        /** CreateApplicationIn */
+        CreateApplicationIn: {
+            /**
+             * Job Id
+             * Format: uuid
+             */
+            job_id: string;
+            /**
+             * Status
+             * @default SAVED
+             * @enum {string}
+             */
+            status: "SAVED" | "INTERESTED" | "RESUME_GENERATED" | "APPLIED" | "RECRUITER_CONTACTED" | "OA_RECEIVED" | "INTERVIEW_SCHEDULED" | "REJECTED" | "OFFER" | "ACCEPTED" | "DECLINED";
+            /** Notes */
+            notes?: string | null;
+        };
+        /** CreateConversationIn */
+        CreateConversationIn: {
+            /** Title */
+            title?: string | null;
+        };
+        /** DashboardOut */
+        DashboardOut: {
+            /** Jobs Found */
+            jobs_found: number;
+            /** Jobs Applied */
+            jobs_applied: number;
+            /** Interviews */
+            interviews: number;
+            /** Rejections */
+            rejections: number;
+            /** Offers */
+            offers: number;
+            /** Success Rate */
+            success_rate: number;
+            /** Recruiter Response Rate */
+            recruiter_response_rate: number;
+            /** Applications By Week */
+            applications_by_week: components["schemas"]["WeekCount"][];
+            /** Applications By Company */
+            applications_by_company: components["schemas"]["CompanyCount"][];
+            /** Match Score Distribution */
+            match_score_distribution: components["schemas"]["BucketCount"][];
+            /** Salary Distribution */
+            salary_distribution: components["schemas"]["BucketCount"][];
+            /** Funnel */
+            funnel: components["schemas"]["FunnelEntry"][];
+            /** Ai Suggestions */
+            ai_suggestions: string[];
+            /** Top Matches */
+            top_matches: components["schemas"]["TopMatch"][];
+        };
+        /** DayCount */
+        DayCount: {
+            /** Date */
+            date: string;
+            /** Count */
+            count: number;
+        };
+        /** ForgotIn */
+        ForgotIn: {
+            /**
+             * Email
+             * Format: email
+             */
+            email: string;
+        };
+        /** FunnelEntry */
+        FunnelEntry: {
+            /** Status */
+            status: string;
+            /** Count */
+            count: number;
+        };
+        /** HTTPValidationError */
+        HTTPValidationError: {
+            /** Detail */
+            detail?: components["schemas"]["ValidationError"][];
+        };
+        /** JobOut */
+        JobOut: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Title */
+            title: string;
+            /** Connector Id */
+            connector_id: string;
+            /** Url */
+            url: string;
+            /** Location Text */
+            location_text?: string | null;
+            /** Workplace */
+            workplace: string;
+            /** Employment */
+            employment: string;
+            /** Arrangement */
+            arrangement: string;
+            /** Salary Min */
+            salary_min?: number | null;
+            /** Salary Max */
+            salary_max?: number | null;
+            /** Salary Currency */
+            salary_currency?: string | null;
+            /** Posted At */
+            posted_at?: string | null;
+        };
+        /** JobPage */
+        JobPage: {
+            /** Items */
+            items: components["schemas"]["JobOut"][];
+            /** Page */
+            page: number;
+            /** Size */
+            size: number;
+            /** Total */
+            total: number;
+        };
+        /** LocationPref */
+        LocationPref: {
+            /** City */
+            city?: string | null;
+            /** State */
+            state?: string | null;
+            /** Country */
+            country?: string | null;
+            /** Radius Mi */
+            radius_mi?: number | null;
+        };
+        /** LoginIn */
+        LoginIn: {
+            /**
+             * Email
+             * Format: email
+             */
+            email: string;
+            /** Password */
+            password: string;
+        };
+        /** LogoutIn */
+        LogoutIn: {
+            /** Refresh Token */
+            refresh_token?: string | null;
+        };
+        /** MatchOut */
+        MatchOut: {
+            job: components["schemas"]["JobOut"];
+            score: components["schemas"]["MatchScoreOut"];
+        };
+        /** MatchPage */
+        MatchPage: {
+            /** Items */
+            items: components["schemas"]["MatchOut"][];
+            /** Page */
+            page: number;
+            /** Size */
+            size: number;
+            /** Total */
+            total: number;
+        };
+        /** MatchScoreOut */
+        MatchScoreOut: {
+            /**
+             * Job Id
+             * Format: uuid
+             */
+            job_id: string;
+            /**
+             * Resume Id
+             * Format: uuid
+             */
+            resume_id: string;
+            /** Overall */
+            overall: number;
+            /** Ats Pct */
+            ats_pct?: number | null;
+            /** Resume Pct */
+            resume_pct?: number | null;
+            /** Salary Score */
+            salary_score?: number | null;
+            /** Location Score */
+            location_score?: number | null;
+            /** Visa Score */
+            visa_score?: number | null;
+            /**
+             * Skill Gap
+             * @default []
+             */
+            skill_gap: unknown[];
+            /** Reasoning */
+            reasoning?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
+        /** MessageOut */
+        MessageOut: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Role */
+            role: string;
+            /** Content */
+            content: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
+        /**
+         * PreferencesIO
+         * @description Single schema for GET response and PUT request (full replace).
+         */
+        "PreferencesIO-Input": {
+            /**
+             * Desired Titles
+             * @default []
+             */
+            desired_titles: string[];
+            /**
+             * Employment Types
+             * @default [
+             *       "FULL_TIME"
+             *     ]
+             */
+            employment_types: ("FULL_TIME" | "PART_TIME" | "CONTRACT" | "INTERNSHIP" | "TEMPORARY" | "UNKNOWN")[];
+            /**
+             * Contract Arrangements
+             * @default []
+             */
+            contract_arrangements: ("W2" | "C1099" | "C2C" | "UNSPECIFIED")[];
+            /**
+             * Workplace Types
+             * @default []
+             */
+            workplace_types: ("REMOTE" | "HYBRID" | "ONSITE" | "UNKNOWN")[];
+            /**
+             * Locations
+             * @default []
+             */
+            locations: components["schemas"]["LocationPref"][];
+            /**
+             * Countries
+             * @default [
+             *       "US"
+             *     ]
+             */
+            countries: string[];
+            /** Seniority */
+            seniority?: ("ENTRY" | "MID" | "SENIOR" | "LEAD" | "PRINCIPAL" | "UNKNOWN") | null;
+            /** Years Experience */
+            years_experience?: number | string | null;
+            /** Visa Status */
+            visa_status?: string | null;
+            /** Work Authorization */
+            work_authorization?: string | null;
+            /**
+             * Needs Sponsorship
+             * @default false
+             */
+            needs_sponsorship: boolean;
+            /**
+             * Open To Staffing
+             * @default true
+             */
+            open_to_staffing: boolean;
+            /** Salary Min */
+            salary_min?: number | null;
+            /** Salary Max */
+            salary_max?: number | null;
+            /**
+             * Salary Currency
+             * @default USD
+             */
+            salary_currency: string;
+            /** Availability Date */
+            availability_date?: string | null;
+            /** Notice Period Days */
+            notice_period_days?: number | null;
+            /**
+             * Auto Apply Enabled
+             * @default false
+             */
+            auto_apply_enabled: boolean;
+            /**
+             * Auto Apply Min Score
+             * @default 70
+             */
+            auto_apply_min_score: number | string;
+            /**
+             * Auto Apply Daily Cap
+             * @default 25
+             */
+            auto_apply_daily_cap: number;
+        };
+        /**
+         * PreferencesIO
+         * @description Single schema for GET response and PUT request (full replace).
+         */
+        "PreferencesIO-Output": {
+            /**
+             * Desired Titles
+             * @default []
+             */
+            desired_titles: string[];
+            /**
+             * Employment Types
+             * @default [
+             *       "FULL_TIME"
+             *     ]
+             */
+            employment_types: ("FULL_TIME" | "PART_TIME" | "CONTRACT" | "INTERNSHIP" | "TEMPORARY" | "UNKNOWN")[];
+            /**
+             * Contract Arrangements
+             * @default []
+             */
+            contract_arrangements: ("W2" | "C1099" | "C2C" | "UNSPECIFIED")[];
+            /**
+             * Workplace Types
+             * @default []
+             */
+            workplace_types: ("REMOTE" | "HYBRID" | "ONSITE" | "UNKNOWN")[];
+            /**
+             * Locations
+             * @default []
+             */
+            locations: components["schemas"]["LocationPref"][];
+            /**
+             * Countries
+             * @default [
+             *       "US"
+             *     ]
+             */
+            countries: string[];
+            /** Seniority */
+            seniority?: ("ENTRY" | "MID" | "SENIOR" | "LEAD" | "PRINCIPAL" | "UNKNOWN") | null;
+            /** Years Experience */
+            years_experience?: string | null;
+            /** Visa Status */
+            visa_status?: string | null;
+            /** Work Authorization */
+            work_authorization?: string | null;
+            /**
+             * Needs Sponsorship
+             * @default false
+             */
+            needs_sponsorship: boolean;
+            /**
+             * Open To Staffing
+             * @default true
+             */
+            open_to_staffing: boolean;
+            /** Salary Min */
+            salary_min?: number | null;
+            /** Salary Max */
+            salary_max?: number | null;
+            /**
+             * Salary Currency
+             * @default USD
+             */
+            salary_currency: string;
+            /** Availability Date */
+            availability_date?: string | null;
+            /** Notice Period Days */
+            notice_period_days?: number | null;
+            /**
+             * Auto Apply Enabled
+             * @default false
+             */
+            auto_apply_enabled: boolean;
+            /**
+             * Auto Apply Min Score
+             * @default 70
+             */
+            auto_apply_min_score: string;
+            /**
+             * Auto Apply Daily Cap
+             * @default 25
+             */
+            auto_apply_daily_cap: number;
+        };
+        /** RefreshIn */
+        RefreshIn: {
+            /** Refresh Token */
             refresh_token: string;
-            /** @description Access token TTL seconds */
-            expires_in?: number;
-            user: components["schemas"]["User"];
         };
-        User: {
-            /** Format: uuid */
-            id?: string;
-            /** Format: email */
-            email?: string;
-            full_name?: string;
-            /** @enum {string} */
-            role?: "USER" | "ADMIN";
-            timezone?: string;
-            /** Format: date-time */
-            created_at?: string;
+        /** RegisterIn */
+        RegisterIn: {
+            /**
+             * Email
+             * Format: email
+             */
+            email: string;
+            /** Password */
+            password: string;
+            /** Full Name */
+            full_name: string;
         };
-        /** @enum {string} */
-        EmploymentType: "FULL_TIME" | "PART_TIME" | "CONTRACT" | "INTERNSHIP" | "TEMPORARY" | "UNKNOWN";
-        /** @enum {string} */
-        ContractArrangement: "W2" | "C1099" | "C2C" | "UNSPECIFIED";
-        /** @enum {string} */
-        WorkplaceType: "REMOTE" | "HYBRID" | "ONSITE" | "UNKNOWN";
-        /** @enum {string} */
-        SponsorshipFlag: "SPONSOR_FRIENDLY" | "NO_SPONSOR" | "UNKNOWN";
-        /** @enum {string} */
-        SeniorityLevel: "ENTRY" | "MID" | "SENIOR" | "LEAD" | "PRINCIPAL" | "UNKNOWN";
-        /** @enum {string} */
-        ApplicationStatus: "SAVED" | "INTERESTED" | "RESUME_GENERATED" | "APPLIED" | "RECRUITER_CONTACTED" | "OA_RECEIVED" | "INTERVIEW_SCHEDULED" | "REJECTED" | "OFFER" | "ACCEPTED" | "DECLINED";
-        /** @enum {string} */
-        DocumentType: "TAILORED_RESUME" | "COVER_LETTER" | "RECRUITER_EMAIL" | "LINKEDIN_MESSAGE" | "COLD_EMAIL";
-        Preferences: {
-            desired_titles?: string[];
-            employment_types?: components["schemas"]["EmploymentType"][];
-            contract_arrangements?: components["schemas"]["ContractArrangement"][];
-            workplace_types?: components["schemas"]["WorkplaceType"][];
-            locations?: {
-                city?: string;
-                state?: string;
-                country?: string;
-                radius_mi?: number;
-            }[];
-            countries?: string[];
-            seniority?: components["schemas"]["SeniorityLevel"];
-            years_experience?: number;
-            visa_status?: string;
-            work_authorization?: string;
-            needs_sponsorship?: boolean;
-            open_to_staffing?: boolean;
-            salary_min?: number;
-            salary_max?: number;
-            salary_currency?: string;
-            /** Format: date */
-            availability_date?: string;
-            notice_period_days?: number;
-            auto_apply_enabled?: boolean;
-            auto_apply_min_score?: number;
-            auto_apply_daily_cap?: number;
+        /** ResetIn */
+        ResetIn: {
+            /** Token */
+            token: string;
+            /** New Password */
+            new_password: string;
         };
-        UserSkill: {
-            name: string;
-            category?: string;
-            years?: number;
-            proficiency?: number;
-        };
-        NotificationSettings: {
-            email_enabled?: boolean;
-            daily_report_hour?: number;
-            /** @description Write-only; returned masked */
-            slack_webhook?: string;
-            /** @description Write-only; returned masked */
-            discord_webhook?: string;
-        };
-        Resume: {
-            /** Format: uuid */
-            id?: string;
-            name?: string;
-            is_default?: boolean;
-            mime_type?: string;
-            /** @description Parsed sections/experience/skills */
-            structured?: Record<string, never>;
-            /** Format: date-time */
-            created_at?: string;
-            /** Format: date-time */
-            updated_at?: string;
-        };
+        /** ResumeAnalysis */
         ResumeAnalysis: {
-            ats_score?: number;
-            strengths?: string[];
-            gaps?: string[];
-            suggestions?: string[];
-            keyword_coverage?: {
+            /** Ats Score */
+            ats_score: number;
+            /**
+             * Strengths
+             * @default []
+             */
+            strengths: string[];
+            /**
+             * Gaps
+             * @default []
+             */
+            gaps: string[];
+            /**
+             * Suggestions
+             * @default []
+             */
+            suggestions: string[];
+            /**
+             * Keyword Coverage
+             * @default {}
+             */
+            keyword_coverage: {
                 [key: string]: boolean;
             };
         };
-        Company: {
-            /** Format: uuid */
-            id?: string;
-            name?: string;
-            website?: string;
-            is_staffing_firm?: boolean;
-            ats_type?: string;
-        };
-        Job: {
-            /** Format: uuid */
-            id?: string;
-            title?: string;
-            company?: components["schemas"]["Company"];
-            connector_id?: string;
-            url?: string;
-            location_text?: string;
-            workplace?: components["schemas"]["WorkplaceType"];
-            employment?: components["schemas"]["EmploymentType"];
-            arrangement?: components["schemas"]["ContractArrangement"];
-            salary_min?: number;
-            salary_max?: number;
-            salary_currency?: string;
-            /** Format: date-time */
-            posted_at?: string;
-            /** @description Convenience copy of overall match score */
-            my_score?: number;
-            sponsorship?: components["schemas"]["SponsorshipFlag"];
-        };
-        JobDetail: components["schemas"]["Job"] & {
-            description_md?: string;
-            extraction?: components["schemas"]["JobExtraction"];
-            match?: components["schemas"]["MatchScore"];
+        /** ResumeOut */
+        ResumeOut: {
             /**
+             * Id
              * Format: uuid
-             * @description Present if already tracked
              */
-            application_id?: string;
+            id: string;
+            /** Name */
+            name: string;
+            /** Is Default */
+            is_default: boolean;
+            /** Mime Type */
+            mime_type?: string | null;
+            /** Structured */
+            structured?: {
+                [key: string]: unknown;
+            } | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
         };
-        JobExtraction: {
-            skills?: string[];
-            tech_stack?: string[];
-            responsibilities?: string[];
-            benefits?: string[];
-            sponsorship?: components["schemas"]["SponsorshipFlag"];
-            seniority?: components["schemas"]["SeniorityLevel"];
-            recruiter_name?: string;
-            recruiter_contact?: string;
-            /** @enum {string} */
-            method?: "LLM" | "HEURISTIC" | "MIXED";
-        };
-        MatchScore: {
-            /** Format: uuid */
-            job_id?: string;
-            /** Format: uuid */
-            resume_id?: string;
-            overall?: number;
-            ats_pct?: number;
-            resume_pct?: number;
-            salary_score?: number;
-            location_score?: number;
-            visa_score?: number;
-            skill_gap?: {
-                skill?: string;
-                required?: boolean;
-                have?: boolean;
-            }[];
-            reasoning?: string;
-            /** Format: date-time */
-            created_at?: string;
-        };
-        Match: {
-            job?: components["schemas"]["Job"];
-            score?: components["schemas"]["MatchScore"];
-        };
-        Application: {
-            /** Format: uuid */
-            id?: string;
-            job?: components["schemas"]["Job"];
-            status?: components["schemas"]["ApplicationStatus"];
-            /** @enum {string} */
-            method?: "MANUAL" | "API" | "AUTOMATED_FORM" | "EMAIL" | "REFERRAL";
-            /** Format: date-time */
-            applied_at?: string;
-            /** Format: date-time */
-            deadline_at?: string;
-            /** Format: date-time */
-            next_action_at?: string;
-            salary_offered?: number;
-            notes?: string;
-            /** Format: date-time */
-            created_at?: string;
-            /** Format: date-time */
-            updated_at?: string;
-        };
-        ApplicationDetail: components["schemas"]["Application"] & {
-            events?: components["schemas"]["ApplicationEvent"][];
-            contacts?: components["schemas"]["ApplicationContact"][];
-            documents?: components["schemas"]["GeneratedDocument"][];
-        };
-        ApplicationEvent: {
-            from_status?: components["schemas"]["ApplicationStatus"];
-            to_status?: components["schemas"]["ApplicationStatus"];
-            /** @enum {string} */
-            actor?: "USER" | "SYSTEM" | "ASSISTANT";
-            note?: string;
-            /** Format: date-time */
-            created_at?: string;
-        };
-        ApplicationContact: {
-            /** Format: uuid */
-            id?: string;
-            /** Format: uuid */
-            recruiter_id?: string;
-            role?: string;
-            email?: string;
-            notes?: string;
-        };
-        GeneratedDocument: {
-            /** Format: uuid */
-            id?: string;
-            /** Format: uuid */
-            job_id?: string;
-            /** Format: uuid */
-            application_id?: string;
-            doc_type?: components["schemas"]["DocumentType"];
-            /** @enum {string} */
-            status?: "PENDING" | "READY" | "FAILED";
-            content_md?: string;
-            has_file?: boolean;
-            model?: string;
-            /** Format: date-time */
-            created_at?: string;
-        };
-        Conversation: {
-            /** Format: uuid */
-            id?: string;
-            title?: string;
-            /** Format: date-time */
-            created_at?: string;
-            /** Format: date-time */
-            updated_at?: string;
-        };
-        ConversationDetail: components["schemas"]["Conversation"] & {
-            messages?: components["schemas"]["Message"][];
-        };
-        Message: {
-            /** Format: uuid */
-            id?: string;
-            /** @enum {string} */
-            role?: "USER" | "ASSISTANT" | "SYSTEM" | "TOOL";
-            content?: string;
-            tool_calls?: Record<string, never>[];
-            /** Format: date-time */
-            created_at?: string;
-        };
-        SearchRun: {
-            id?: string;
-            /** @enum {string} */
-            status?: "RUNNING" | "SUCCESS" | "FAILED" | "PARTIAL";
-            /** Format: date-time */
-            started_at?: string;
-            /** Format: date-time */
-            finished_at?: string;
-            stats?: {
-                jobs_found?: number;
-                jobs_new?: number;
-                jobs_scored?: number;
-                connectors_failed?: string[];
+        /** SearchRunOut */
+        SearchRunOut: {
+            /** Id */
+            id: string;
+            /** Status */
+            status: string;
+            /** Started At */
+            started_at?: string | null;
+            /** Finished At */
+            finished_at?: string | null;
+            /**
+             * Stats
+             * @default {}
+             */
+            stats: {
+                [key: string]: unknown;
             };
         };
-        Dashboard: {
-            jobs_found?: number;
-            jobs_applied?: number;
-            interviews?: number;
-            rejections?: number;
-            offers?: number;
-            success_rate?: number;
-            recruiter_response_rate?: number;
-            applications_by_week?: {
-                week?: string;
-                count?: number;
-            }[];
-            applications_by_company?: {
-                company?: string;
-                count?: number;
-            }[];
-            match_score_distribution?: {
-                bucket?: string;
-                count?: number;
-            }[];
-            salary_distribution?: {
-                bucket?: string;
-                count?: number;
-            }[];
-            funnel?: {
-                status?: components["schemas"]["ApplicationStatus"];
-                count?: number;
-            }[];
-            ai_suggestions?: string[];
-            top_matches?: components["schemas"]["Match"][];
+        /** SendMessageIn */
+        SendMessageIn: {
+            /** Content */
+            content: string;
         };
-        Trends: {
-            postings_per_day?: {
-                /** Format: date */
-                date?: string;
-                count?: number;
-            }[];
-            booming_companies?: {
-                company?: string;
-                recent?: number;
-                previous?: number;
-                growth_pct?: number;
-            }[];
-            tech_demand?: {
-                skill?: string;
-                count?: number;
-                trend_pct?: number;
-            }[];
+        /** TechDemand */
+        TechDemand: {
+            /** Skill */
+            skill: string;
+            /** Count */
+            count: number;
         };
-        AiSettings: {
-            provider_chain?: ("OLLAMA" | "OPENROUTER" | "GEMINI" | "ANTHROPIC" | "OPENAI")[];
-            daily_token_budget?: number;
-            /** @description Write-only values; GET returns masked (sk-***) */
-            keys?: {
-                [key: string]: string;
-            };
-            ollama_base_url?: string;
+        /** TokenPairOut */
+        TokenPairOut: {
+            /** Access Token */
+            access_token: string;
+            /** Refresh Token */
+            refresh_token: string;
+            /** Expires In */
+            expires_in: number;
+            user: components["schemas"]["UserOut"];
         };
-        Prompt: {
-            id?: number;
-            key?: string;
-            version?: number;
-            template?: string;
-            variables_schema?: Record<string, never>;
-            active?: boolean;
+        /** TopMatch */
+        TopMatch: {
+            /** Title */
+            title: string;
+            /** Url */
+            url: string;
+            /** Score */
+            score: number;
         };
-        ConnectorSetting: {
-            connector_id?: string;
-            display_name?: string;
-            /** @enum {string} */
-            compliance_mode?: "OFFICIAL_API" | "PUBLIC_FEED" | "SEARCH_LINK" | "USER_AUTHORIZED_AUTOMATION";
-            enabled?: boolean;
-            rate_limit_per_min?: number;
-            healthy?: boolean;
-            /** Format: date-time */
-            last_success_at?: string;
+        /** TrendsOut */
+        TrendsOut: {
+            /** Postings Per Day */
+            postings_per_day: components["schemas"]["DayCount"][];
+            /** Booming Companies */
+            booming_companies: components["schemas"]["BoomingCompany"][];
+            /** Tech Demand */
+            tech_demand: components["schemas"]["TechDemand"][];
         };
-        WatchlistEntry: {
-            /** Format: uuid */
-            id?: string;
-            company_name?: string;
-            connector_id?: string;
-            /** @description Connector-specific, e.g. ATS slug */
-            config?: Record<string, never>;
-            enabled?: boolean;
+        /** UpdateApplicationIn */
+        UpdateApplicationIn: {
+            /** Notes */
+            notes?: string | null;
+            /** Salary Offered */
+            salary_offered?: number | null;
+            /** Deadline At */
+            deadline_at?: string | null;
+            /** Next Action At */
+            next_action_at?: string | null;
+            /** Resume Id */
+            resume_id?: string | null;
         };
-        ScheduledTask: {
-            key?: string;
-            cron?: string;
-            timezone?: string;
-            enabled?: boolean;
-            description?: string;
+        /** UserOut */
+        UserOut: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Email */
+            email: string;
+            /** Full Name */
+            full_name: string;
+            /** Role */
+            role: string;
+            /** Timezone */
+            timezone: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
         };
-        ScheduledRun: {
-            id?: number;
-            task_key?: string;
-            /** @enum {string} */
-            status?: "RUNNING" | "SUCCESS" | "FAILED" | "PARTIAL";
-            /** Format: date-time */
-            started_at?: string;
-            /** Format: date-time */
-            finished_at?: string;
-            stats?: Record<string, never>;
-            error?: string;
+        /** UserPatch */
+        UserPatch: {
+            /** Full Name */
+            full_name?: string | null;
+            /** Timezone */
+            timezone?: string | null;
         };
-        AuditEvent: {
-            id?: number;
-            /** Format: uuid */
-            user_id?: string;
-            /** @enum {string} */
-            actor?: "USER" | "SYSTEM" | "ASSISTANT";
-            event_type?: string;
-            entity_type?: string;
-            entity_id?: string;
-            detail?: Record<string, never>;
-            /** Format: date-time */
-            created_at?: string;
+        /** ValidationError */
+        ValidationError: {
+            /** Location */
+            loc: (string | number)[];
+            /** Message */
+            msg: string;
+            /** Error Type */
+            type: string;
+            /** Input */
+            input?: unknown;
+            /** Context */
+            ctx?: Record<string, never>;
         };
-        JobPage: {
-            items?: components["schemas"]["Job"][];
-            page?: number;
-            size?: number;
-            total?: number;
-        };
-        MatchPage: {
-            items?: components["schemas"]["Match"][];
-            page?: number;
-            size?: number;
-            total?: number;
-        };
-        ApplicationPage: {
-            items?: components["schemas"]["Application"][];
-            page?: number;
-            size?: number;
-            total?: number;
+        /** WeekCount */
+        WeekCount: {
+            /** Week */
+            week: string;
+            /** Count */
+            count: number;
         };
     };
-    responses: {
-        /** @description RFC-7807 problem */
-        Problem: {
-            headers: {
-                [name: string]: unknown;
-            };
-            content: {
-                "application/problem+json": components["schemas"]["Problem"];
-            };
-        };
-    };
-    parameters: {
-        page: number;
-        size: number;
-        jobId: string;
-        resumeId: string;
-        applicationId: string;
-    };
+    responses: never;
+    parameters: never;
     requestBodies: never;
     headers: never;
     pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    register: {
+    health_api_v1_health_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    ready_api_v1_health_ready_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    register_api_v1_auth_register_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -1299,28 +1347,31 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": {
-                    /** Format: email */
-                    email: string;
-                    password: string;
-                    full_name: string;
-                };
+                "application/json": components["schemas"]["RegisterIn"];
             };
         };
         responses: {
-            /** @description Created */
+            /** @description Successful Response */
             201: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TokenPair"];
+                    "application/json": components["schemas"]["TokenPairOut"];
                 };
             };
-            409: components["responses"]["Problem"];
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
         };
     };
-    login: {
+    login_api_v1_auth_login_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -1329,28 +1380,31 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": {
-                    /** Format: email */
-                    email: string;
-                    password: string;
-                };
+                "application/json": components["schemas"]["LoginIn"];
             };
         };
         responses: {
-            /** @description OK */
+            /** @description Successful Response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TokenPair"];
+                    "application/json": components["schemas"]["TokenPairOut"];
                 };
             };
-            401: components["responses"]["Problem"];
-            429: components["responses"]["Problem"];
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
         };
     };
-    refreshToken: {
+    refresh_api_v1_auth_refresh_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -1359,49 +1413,62 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": {
-                    refresh_token: string;
-                };
+                "application/json": components["schemas"]["RefreshIn"];
             };
         };
         responses: {
-            /** @description Rotated pair */
+            /** @description Successful Response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TokenPair"];
+                    "application/json": components["schemas"]["TokenPairOut"];
                 };
             };
-            401: components["responses"]["Problem"];
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
         };
     };
-    logout: {
+    logout_api_v1_auth_logout_post: {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        requestBody?: {
+        requestBody: {
             content: {
-                "application/json": {
-                    refresh_token?: string;
-                };
+                "application/json": components["schemas"]["LogoutIn"];
             };
         };
         responses: {
-            /** @description Logged out; refresh token revoked */
+            /** @description Successful Response */
             204: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content?: never;
             };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
         };
     };
-    forgotPassword: {
+    forgot_password_api_v1_auth_password_forgot_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -1410,23 +1477,31 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": {
-                    /** Format: email */
-                    email: string;
-                };
+                "application/json": components["schemas"]["ForgotIn"];
             };
         };
         responses: {
-            /** @description Reset email queued (always 202 to avoid enumeration) */
+            /** @description Successful Response */
             202: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
             };
         };
     };
-    resetPassword: {
+    reset_password_api_v1_auth_password_reset_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -1435,44 +1510,60 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": {
-                    token: string;
-                    new_password: string;
-                };
+                "application/json": components["schemas"]["ResetIn"];
             };
         };
         responses: {
-            /** @description Password changed; all sessions revoked */
+            /** @description Successful Response */
             204: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content?: never;
             };
-            400: components["responses"]["Problem"];
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
         };
     };
-    oauthAuthorize: {
+    oauth_authorize_api_v1_auth_oauth__provider__authorize_get: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                provider: "google" | "github";
+                provider: string;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description Redirect to provider consent screen */
+            /** @description Successful Response */
             302: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
             };
         };
     };
-    oauthCallback: {
+    oauth_callback_api_v1_auth_oauth__provider__callback_get: {
         parameters: {
             query: {
                 code: string;
@@ -1480,24 +1571,33 @@ export interface operations {
             };
             header?: never;
             path: {
-                provider: "google" | "github";
+                provider: string;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description OK */
+            /** @description Successful Response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TokenPair"];
+                    "application/json": components["schemas"]["TokenPairOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
     };
-    getMe: {
+    get_me_api_v1_users_me_get: {
         parameters: {
             query?: never;
             header?: never;
@@ -1506,65 +1606,18 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description OK */
+            /** @description Successful Response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["User"];
+                    "application/json": components["schemas"]["UserOut"];
                 };
             };
         };
     };
-    updateMe: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": {
-                    full_name?: string;
-                    timezone?: string;
-                };
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["User"];
-                };
-            };
-        };
-    };
-    getPreferences: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Preferences"];
-                };
-            };
-        };
-    };
-    putPreferences: {
+    update_me_api_v1_users_me_patch: {
         parameters: {
             query?: never;
             header?: never;
@@ -1573,22 +1626,31 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["Preferences"];
+                "application/json": components["schemas"]["UserPatch"];
             };
         };
         responses: {
-            /** @description OK */
+            /** @description Successful Response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Preferences"];
+                    "application/json": components["schemas"]["UserOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
     };
-    getSkills: {
+    get_preferences_api_v1_users_me_preferences_get: {
         parameters: {
             query?: never;
             header?: never;
@@ -1597,18 +1659,18 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description OK */
+            /** @description Successful Response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UserSkill"][];
+                    "application/json": components["schemas"]["PreferencesIO-Output"];
                 };
             };
         };
     };
-    putSkills: {
+    put_preferences_api_v1_users_me_preferences_put: {
         parameters: {
             query?: never;
             header?: never;
@@ -1617,20 +1679,31 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["UserSkill"][];
+                "application/json": components["schemas"]["PreferencesIO-Input"];
             };
         };
         responses: {
-            /** @description Replaced */
+            /** @description Successful Response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["PreferencesIO-Output"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
             };
         };
     };
-    getNotificationSettings: {
+    list_resumes_api_v1_resumes_get: {
         parameters: {
             query?: never;
             header?: never;
@@ -1639,190 +1712,153 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description OK */
+            /** @description Successful Response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["NotificationSettings"];
+                    "application/json": components["schemas"]["ResumeOut"][];
                 };
             };
         };
     };
-    putNotificationSettings: {
+    upload_resume_api_v1_resumes_post: {
         parameters: {
-            query?: never;
+            query: {
+                name: string;
+            };
             header?: never;
             path?: never;
             cookie?: never;
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["NotificationSettings"];
+                "multipart/form-data": components["schemas"]["Body_upload_resume_api_v1_resumes_post"];
             };
         };
         responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    listResumes: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Resume"][];
-                };
-            };
-        };
-    };
-    uploadResume: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "multipart/form-data": {
-                    name: string;
-                    /** Format: binary */
-                    file: string;
-                };
-            };
-        };
-        responses: {
-            /** @description Parsed + stored */
+            /** @description Successful Response */
             201: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Resume"];
+                    "application/json": components["schemas"]["ResumeOut"];
                 };
             };
-            422: components["responses"]["Problem"];
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
         };
     };
-    getResume: {
+    get_resume_api_v1_resumes__resume_id__get: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                resumeId: components["parameters"]["resumeId"];
+                resume_id: string;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description OK */
+            /** @description Successful Response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Resume"];
+                    "application/json": components["schemas"]["ResumeOut"];
                 };
             };
-            404: components["responses"]["Problem"];
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
         };
     };
-    deleteResume: {
+    delete_resume_api_v1_resumes__resume_id__delete: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                resumeId: components["parameters"]["resumeId"];
+                resume_id: string;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description Deleted */
+            /** @description Successful Response */
             204: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content?: never;
             };
-        };
-    };
-    updateResume: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                resumeId: components["parameters"]["resumeId"];
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": {
-                    name?: string;
-                    structured?: Record<string, never>;
-                };
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
+            /** @description Validation Error */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
             };
         };
     };
-    setDefaultResume: {
+    set_default_api_v1_resumes__resume_id__default_post: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                resumeId: components["parameters"]["resumeId"];
+                resume_id: string;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description Now the default */
+            /** @description Successful Response */
             204: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content?: never;
             };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
         };
     };
-    analyzeResume: {
+    analyze_resume_api_v1_resumes__resume_id__analysis_get: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                resumeId: components["parameters"]["resumeId"];
+                resume_id: string;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description AI analysis (ATS score, strengths, gaps, suggestions) */
+            /** @description Successful Response */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -1831,49 +1867,31 @@ export interface operations {
                     "application/json": components["schemas"]["ResumeAnalysis"];
                 };
             };
-        };
-    };
-    downloadResume: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                resumeId: components["parameters"]["resumeId"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Original file */
-            200: {
+            /** @description Validation Error */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/octet-stream": string;
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
     };
-    listJobs: {
+    list_jobs_api_v1_jobs_get: {
         parameters: {
             query?: {
-                /** @description Title keyword search */
-                q?: string;
-                employment?: components["schemas"]["EmploymentType"];
-                arrangement?: components["schemas"]["ContractArrangement"];
-                workplace?: components["schemas"]["WorkplaceType"];
-                country?: string;
-                city?: string;
-                sponsorship?: components["schemas"]["SponsorshipFlag"];
-                min_salary?: number;
+                q?: string | null;
+                employment?: string | null;
+                arrangement?: string | null;
+                workplace?: string | null;
+                country?: string | null;
+                sponsorship?: string | null;
+                min_salary?: number | null;
                 posted_within_hours?: number;
-                connector_id?: string;
-                /** @description Filter by my match score */
-                min_score?: number;
-                sort?: "posted_at" | "-posted_at" | "score" | "-score";
-                page?: components["parameters"]["page"];
-                size?: components["parameters"]["size"];
+                sort?: string;
+                page?: number;
+                size?: number;
             };
             header?: never;
             path?: never;
@@ -1881,7 +1899,7 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description OK */
+            /** @description Successful Response */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -1890,35 +1908,20 @@ export interface operations {
                     "application/json": components["schemas"]["JobPage"];
                 };
             };
-        };
-    };
-    getJob: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                jobId: components["parameters"]["jobId"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Job + extraction + my score */
-            200: {
+            /** @description Validation Error */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["JobDetail"];
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
-            404: components["responses"]["Problem"];
         };
     };
-    exportJobs: {
+    export_jobs_api_v1_jobs_export_get: {
         parameters: {
             query?: {
-                min_score?: number;
                 posted_within_hours?: number;
             };
             header?: never;
@@ -1927,46 +1930,27 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description CSV */
+            /** @description Successful Response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "text/csv": string;
+                    "application/json": unknown;
                 };
             };
-        };
-    };
-    listSearchRuns: {
-        parameters: {
-            query?: {
-                page?: components["parameters"]["page"];
-                size?: components["parameters"]["size"];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
+            /** @description Validation Error */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        items?: components["schemas"]["SearchRun"][];
-                        page?: number;
-                        size?: number;
-                        total?: number;
-                    };
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
     };
-    triggerSearchRun: {
+    trigger_search_run_api_v1_search_runs_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -1975,56 +1959,54 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Queued */
+            /** @description Successful Response */
             202: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["SearchRun"];
-                };
-            };
-            /** @description A run is already in progress */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["Problem"];
+                    "application/json": components["schemas"]["SearchRunOut"];
                 };
             };
         };
     };
-    getSearchRun: {
+    get_search_run_api_v1_search_runs__run_id__get: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                runId: string;
+                run_id: string;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description OK */
+            /** @description Successful Response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["SearchRun"];
+                    "application/json": components["schemas"]["SearchRunOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
     };
-    listMatches: {
+    list_matches_api_v1_matches_get: {
         parameters: {
             query?: {
                 min_score?: number;
-                since?: string;
-                resume_id?: string;
-                page?: components["parameters"]["page"];
-                size?: components["parameters"]["size"];
+                page?: number;
+                size?: number;
             };
             header?: never;
             path?: never;
@@ -2032,7 +2014,7 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Ranked matches */
+            /** @description Successful Response */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -2041,65 +2023,54 @@ export interface operations {
                     "application/json": components["schemas"]["MatchPage"];
                 };
             };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
         };
     };
-    getMatch: {
+    get_match_api_v1_jobs__job_id__match_get: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                jobId: components["parameters"]["jobId"];
+                job_id: string;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description Full score breakdown + reasoning */
+            /** @description Successful Response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["MatchScore"];
+                    "application/json": components["schemas"]["MatchScoreOut"];
                 };
             };
-            404: components["responses"]["Problem"];
-        };
-    };
-    recomputeMatch: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                jobId: components["parameters"]["jobId"];
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": {
-                    /** Format: uuid */
-                    resume_id?: string;
-                };
-            };
-        };
-        responses: {
-            /** @description Recompute queued */
-            202: {
+            /** @description Validation Error */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
             };
         };
     };
-    listApplications: {
+    list_applications_api_v1_applications_get: {
         parameters: {
             query?: {
-                status?: components["schemas"]["ApplicationStatus"];
-                q?: string;
-                page?: components["parameters"]["page"];
-                size?: components["parameters"]["size"];
+                status?: string | null;
+                page?: number;
+                size?: number;
             };
             header?: never;
             path?: never;
@@ -2107,7 +2078,7 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description OK */
+            /** @description Successful Response */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -2116,9 +2087,18 @@ export interface operations {
                     "application/json": components["schemas"]["ApplicationPage"];
                 };
             };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
         };
     };
-    createApplication: {
+    create_application_api_v1_applications_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -2127,243 +2107,212 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": {
-                    /** Format: uuid */
-                    job_id: string;
-                    status?: components["schemas"]["ApplicationStatus"];
-                    notes?: string;
-                };
+                "application/json": components["schemas"]["CreateApplicationIn"];
             };
         };
         responses: {
-            /** @description Created */
+            /** @description Successful Response */
             201: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Application"];
+                    "application/json": components["schemas"]["ApplicationOut"];
                 };
             };
-            /** @description Already tracked */
-            409: {
+            /** @description Validation Error */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/problem+json": components["schemas"]["Problem"];
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
     };
-    getApplication: {
+    get_application_api_v1_applications__application_id__get: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                applicationId: components["parameters"]["applicationId"];
+                application_id: string;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description OK */
+            /** @description Successful Response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApplicationDetail"];
+                    "application/json": components["schemas"]["ApplicationOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
     };
-    deleteApplication: {
+    delete_application_api_v1_applications__application_id__delete: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                applicationId: components["parameters"]["applicationId"];
+                application_id: string;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description Soft-deleted */
+            /** @description Successful Response */
             204: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content?: never;
             };
-        };
-    };
-    updateApplication: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                applicationId: components["parameters"]["applicationId"];
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": {
-                    notes?: string;
-                    salary_offered?: number;
-                    /** Format: date-time */
-                    deadline_at?: string;
-                    /** Format: date-time */
-                    next_action_at?: string;
-                    /** Format: uuid */
-                    resume_id?: string;
-                };
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
+            /** @description Validation Error */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
             };
         };
     };
-    changeApplicationStatus: {
+    update_application_api_v1_applications__application_id__patch: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                applicationId: components["parameters"]["applicationId"];
+                application_id: string;
             };
             cookie?: never;
         };
         requestBody: {
             content: {
-                "application/json": {
-                    to_status: components["schemas"]["ApplicationStatus"];
-                    note?: string;
-                };
+                "application/json": components["schemas"]["UpdateApplicationIn"];
             };
         };
         responses: {
-            /** @description Status changed; event recorded */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    listApplicationEvents: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                applicationId: components["parameters"]["applicationId"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Status history */
+            /** @description Successful Response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApplicationEvent"][];
+                    "application/json": components["schemas"]["ApplicationOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
     };
-    addApplicationContact: {
+    change_status_api_v1_applications__application_id__status_post: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                applicationId: components["parameters"]["applicationId"];
+                application_id: string;
             };
             cookie?: never;
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["ApplicationContact"];
+                "application/json": components["schemas"]["ChangeStatusIn"];
             };
         };
         responses: {
-            /** @description Added */
-            201: {
+            /** @description Successful Response */
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ApplicationOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
             };
         };
     };
-    autoApply: {
+    list_events_api_v1_applications__application_id__events_get: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                applicationId: components["parameters"]["applicationId"];
+                application_id: string;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description Apply task queued */
-            202: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Automation not permitted for this source */
-            409: {
+            /** @description Successful Response */
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/problem+json": components["schemas"]["Problem"];
+                    "application/json": components["schemas"]["ApplicationEventOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
     };
-    listDocuments: {
+    list_conversations_api_v1_assistant_conversations_get: {
         parameters: {
-            query?: {
-                job_id?: string;
-                doc_type?: components["schemas"]["DocumentType"];
-                page?: components["parameters"]["page"];
-                size?: components["parameters"]["size"];
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description OK */
+            /** @description Successful Response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        items?: components["schemas"]["GeneratedDocument"][];
-                        page?: number;
-                        size?: number;
-                        total?: number;
-                    };
+                    "application/json": components["schemas"]["ConversationOut"][];
                 };
             };
         };
     };
-    generateDocument: {
+    create_conversation_api_v1_assistant_conversations_post: {
         parameters: {
             query?: never;
             header?: never;
@@ -2372,138 +2321,42 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": {
-                    /** Format: uuid */
-                    job_id: string;
-                    doc_type: components["schemas"]["DocumentType"];
-                    /**
-                     * Format: uuid
-                     * @description Defaults to the default resume
-                     */
-                    resume_id?: string;
-                };
+                "application/json": components["schemas"]["CreateConversationIn"];
             };
         };
         responses: {
-            /** @description Generation queued; poll the returned document id */
-            202: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    getDocument: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                documentId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK (status + content when ready) */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GeneratedDocument"];
-                };
-            };
-        };
-    };
-    downloadDocument: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                documentId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Rendered docx/pdf */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/octet-stream": string;
-                };
-            };
-        };
-    };
-    listConversations: {
-        parameters: {
-            query?: {
-                page?: components["parameters"]["page"];
-                size?: components["parameters"]["size"];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        items?: components["schemas"]["Conversation"][];
-                        page?: number;
-                        size?: number;
-                        total?: number;
-                    };
-                };
-            };
-        };
-    };
-    createConversation: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": {
-                    title?: string;
-                };
-            };
-        };
-        responses: {
-            /** @description Created */
+            /** @description Successful Response */
             201: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Conversation"];
+                    "application/json": components["schemas"]["ConversationOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
     };
-    getConversation: {
+    get_conversation_api_v1_assistant_conversations__conversation_id__get: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                conversationId: string;
+                conversation_id: string;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description Conversation with messages */
+            /** @description Successful Response */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -2512,57 +2365,82 @@ export interface operations {
                     "application/json": components["schemas"]["ConversationDetail"];
                 };
             };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
         };
     };
-    deleteConversation: {
+    delete_conversation_api_v1_assistant_conversations__conversation_id__delete: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                conversationId: string;
+                conversation_id: string;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description Deleted */
+            /** @description Successful Response */
             204: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content?: never;
             };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
         };
     };
-    sendMessage: {
+    send_message_api_v1_assistant_conversations__conversation_id__messages_post: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                conversationId: string;
+                conversation_id: string;
             };
             cookie?: never;
         };
         requestBody: {
             content: {
-                "application/json": {
-                    content: string;
-                };
+                "application/json": components["schemas"]["SendMessageIn"];
             };
         };
         responses: {
-            /** @description SSE stream */
+            /** @description Successful Response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "text/event-stream": string;
+                    "application/json": components["schemas"]["AssistantReplyOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
     };
-    getDashboard: {
+    get_dashboard_api_v1_analytics_dashboard_get: {
         parameters: {
             query?: never;
             header?: never;
@@ -2571,18 +2449,18 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description OK */
+            /** @description Successful Response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Dashboard"];
+                    "application/json": components["schemas"]["DashboardOut"];
                 };
             };
         };
     };
-    getTrends: {
+    get_trends_api_v1_analytics_trends_get: {
         parameters: {
             query?: {
                 days?: number;
@@ -2593,405 +2471,23 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Hiring trends + tech demand over time */
+            /** @description Successful Response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Trends"];
+                    "application/json": components["schemas"]["TrendsOut"];
                 };
             };
-        };
-    };
-    getAiSettings: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Provider chain + budgets (keys masked) */
-            200: {
+            /** @description Validation Error */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["AiSettings"];
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
-            };
-        };
-    };
-    putAiSettings: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["AiSettings"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    listPrompts: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Prompt"][];
-                };
-            };
-        };
-    };
-    createPromptVersion: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["Prompt"];
-            };
-        };
-        responses: {
-            /** @description New version created */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    activatePrompt: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                promptId: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description This version is now active for its key */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    listConnectors: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ConnectorSetting"][];
-                };
-            };
-        };
-    };
-    updateConnector: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                connectorId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    enabled?: boolean;
-                    rate_limit_per_min?: number;
-                    config?: Record<string, never>;
-                };
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    listWatchlist: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["WatchlistEntry"][];
-                };
-            };
-        };
-    };
-    addWatchlistEntry: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["WatchlistEntry"];
-            };
-        };
-        responses: {
-            /** @description Added */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    listSchedules: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ScheduledTask"][];
-                };
-            };
-        };
-    };
-    updateSchedule: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                taskKey: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    cron?: string;
-                    enabled?: boolean;
-                };
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    runScheduleNow: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                taskKey: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Triggered */
-            202: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    listRuns: {
-        parameters: {
-            query?: {
-                task_key?: string;
-                page?: components["parameters"]["page"];
-                size?: components["parameters"]["size"];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Scheduler run history */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        items?: components["schemas"]["ScheduledRun"][];
-                        page?: number;
-                        size?: number;
-                        total?: number;
-                    };
-                };
-            };
-        };
-    };
-    listUsers: {
-        parameters: {
-            query?: {
-                page?: components["parameters"]["page"];
-                size?: components["parameters"]["size"];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        items?: components["schemas"]["User"][];
-                        page?: number;
-                        size?: number;
-                        total?: number;
-                    };
-                };
-            };
-        };
-    };
-    listAuditEvents: {
-        parameters: {
-            query?: {
-                user_id?: string;
-                event_type?: string;
-                page?: components["parameters"]["page"];
-                size?: components["parameters"]["size"];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        items?: components["schemas"]["AuditEvent"][];
-                        page?: number;
-                        size?: number;
-                        total?: number;
-                    };
-                };
-            };
-        };
-    };
-    health: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Liveness */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ready: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description DB + Redis reachable */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description A dependency is down */
-            503: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
             };
         };
     };
