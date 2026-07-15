@@ -17,6 +17,15 @@ class UserPatch(BaseModel):
     timezone: str | None = None
 
 
+class NotificationSettingsIO(BaseModel):
+    """GET returns webhooks masked; PUT treats masked values as 'unchanged'
+    and empty strings as 'clear'."""
+    email_enabled: bool = True
+    daily_report_hour: int = Field(default=21, ge=0, le=23)
+    slack_webhook: str | None = None
+    discord_webhook: str | None = None
+
+
 class LocationPref(BaseModel):
     city: str | None = None
     state: str | None = None

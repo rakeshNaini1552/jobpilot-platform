@@ -148,3 +148,35 @@ async def list_events(application_id: uuid.UUID, session: Session,
         select(ApplicationEvent)
         .where(ApplicationEvent.application_id == application_id)
         .order_by(ApplicationEvent.created_at))).all()
+
+
+@router.post("/{application_id}/apply", status_code=202)
+async def auto_apply(application_id: uuid.UUID, session: Session,
+                     user: CurrentUser):
+    """Compliance gate for automated application.
+
+    Automation is only ever permitted for OFFICIAL_API /
+    USER_AUTHORIZED_AUTOMATION connectors that opt in — everything else gets
+    a 409 with the manual-apply URL. Permitted sources return 501 until the
+    per-ATS submitter ships; this endpoint never fakes a submission."""
+    from app.connector.api import can_auto_apply
+
+    row = await _owned(session, user, application_id)
+    job = await session.get(Job, row.job_id)
+
+    if not can_auto_apply(job.connector_id):
+        await audit(session, "tracker.apply_gated", user_id=user.id,
+                    entity_type="application", entity_id=str(row.id),
+                    detail={"connector": job.connector_id, "outcome": "manual"})
+        await session.commit()
+        raise Problem(
+            409, "Automation not permitted for this source",
+            f"'{job.connector_id}' does not allow automated applications. "
+            f"Apply manually via the job link.",
+            type_suffix="automation-not-permitted", apply_url=job.url)
+
+    raise Problem(
+        501, "Auto-submission not yet enabled",
+        f"'{job.connector_id}' permits automation, but the submitter for this "
+        f"ATS is not enabled in this release. Apply manually via the job link.",
+        type_suffix="auto-apply-unavailable", apply_url=job.url)

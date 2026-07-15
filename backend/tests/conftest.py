@@ -115,6 +115,7 @@ def _truncate_all() -> None:
               "generated_documents", "application_events", "application_contacts",
               "applications", "ai_messages", "ai_conversations",
               "resume_chunks", "resumes", "jobs", "companies",
+              "notifications", "notification_settings", "analytics_snapshots",
               "scheduled_runs", "audit_events", "refresh_tokens",
               "password_reset_tokens", "oauth_accounts", "preferences", "users"]
     with engine.begin() as conn:

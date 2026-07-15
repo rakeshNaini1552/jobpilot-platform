@@ -14,6 +14,7 @@ from .connectors.ats import (
     SmartRecruitersConnector,
 )
 from .connectors.dice import DiceConnector
+from .connectors.public_feeds import RemoteOKConnector, RemotiveConnector
 from .connectors.search_links import IndeedLinks, LinkedInLinks, MonsterLinks, ZipRecruiterLinks
 from .models import ConnectorSetting
 from .spi import ComplianceMode, ConnectorConfig
@@ -22,6 +23,7 @@ _FETCH_CONNECTORS = {
     c.descriptor.id: c for c in [
         GreenhouseConnector(), LeverConnector(), AshbyConnector(),
         SmartRecruitersConnector(), DiceConnector(),
+        RemoteOKConnector(), RemotiveConnector(),
         AdzunaConnector(), JoobleConnector(),
     ]
 }

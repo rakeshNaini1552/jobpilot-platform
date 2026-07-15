@@ -96,3 +96,70 @@ def test_sponsorship_and_seniority_classification():
     assert classify_seniority("Senior Software Engineer", "") == "SENIOR"
     assert classify_seniority("Software Engineer", "") == "MID"
     assert classify_seniority("Principal Architect", "") == "PRINCIPAL"
+
+
+# ---- arrangement classification: negation + source field priority -------------
+def test_c2c_negations_do_not_classify_as_c2c():
+    from app.connector.spi import guess_arrangement
+    # postings that MENTION C2C to refuse it
+    assert guess_arrangement("W2 only. No C2C or third party agencies.") == "W2"
+    assert guess_arrangement("Cannot work with corp-to-corp candidates") == "W2"
+    assert guess_arrangement("C2C not accepted, W2 basis") == "W2"
+    assert guess_arrangement("No third-party candidates please") == "W2"
+    # genuine C2C still detected
+    assert guess_arrangement("Open to C2C and W2") == "C2C"
+    assert guess_arrangement("corp to corp welcome") == "C2C"
+    assert guess_arrangement("1099 contract") == "C1099"
+    assert guess_arrangement("nothing about arrangements") == "UNSPECIFIED"
+
+
+def test_source_employment_field_is_authoritative():
+    from app.connector.spi import guess_arrangement
+    # Dice-style employmentType beats free text
+    assert guess_arrangement("No C2C in the text",
+                             employment_raw="Contract Corp-To-Corp") == "C2C"
+    assert guess_arrangement("C2C mentioned in text",
+                             employment_raw="Contract W2") == "W2"
+    assert guess_arrangement("", employment_raw="Contract Independent") == "C1099"
+
+
+# ---- new keyless public feeds ---------------------------------------------------
+@respx.mock
+def test_remoteok_parses_and_skips_legal_notice():
+    from app.connector.connectors.public_feeds import RemoteOKConnector
+    respx.get("https://remoteok.com/api").mock(return_value=httpx.Response(200, json=[
+        {"legal": "you must link back"},                     # notice element
+        {"id": 7, "position": "Senior Java Engineer", "company": "Acme Remote",
+         "url": "https://remoteok.com/jobs/7", "description": "<p>Java & AWS</p>",
+         "location": "USA", "salary_min": 120000, "salary_max": 150000,
+         "date": "2026-07-10T00:00:00+00:00", "tags": ["java"]},
+    ]))
+    posts = RemoteOKConnector().search(JobQuery(terms=["Java"]), ConnectorConfig())
+    assert len(posts) == 1
+    assert posts[0].title == "Senior Java Engineer"
+    assert posts[0].is_remote is True
+    assert "<p>" not in posts[0].description_md              # html stripped
+
+
+@respx.mock
+def test_remotive_parses():
+    from app.connector.connectors.public_feeds import RemotiveConnector
+    respx.get("https://remotive.com/api/remote-jobs").mock(
+        return_value=httpx.Response(200, json={"jobs": [
+            {"id": 3, "title": "Java Backend Developer", "company_name": "Remotive Co",
+             "url": "https://remotive.com/j/3", "description": "<b>Spring Boot</b>",
+             "candidate_required_location": "USA only", "job_type": "full_time",
+             "publication_date": "2026-07-12T08:00:00"},
+        ]}))
+    posts = RemotiveConnector().search(JobQuery(terms=["Java"]), ConnectorConfig())
+    assert posts[0].company_name == "Remotive Co"
+    assert posts[0].location_text == "USA only"
+
+
+def test_remote_matching_is_word_bounded():
+    """'Java Developer' must not match 'javascript' tags."""
+    from app.connector.connectors.public_feeds import _matches
+    q = JobQuery(terms=["Java Developer"])
+    assert _matches(q, "Frontend Dev", extra="javascript react") is False
+    assert _matches(q, "Backend Engineer (Java)") is True
+    assert _matches(q, "Platform Engineer", extra="java spring") is True

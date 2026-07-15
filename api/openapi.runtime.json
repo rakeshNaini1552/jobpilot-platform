@@ -522,6 +522,76 @@
     ]
    }
   },
+  "/api/v1/users/me/notification-settings": {
+   "get": {
+    "tags": [
+     "profile"
+    ],
+    "summary": "Get Notification Settings",
+    "operationId": "get_notification_settings_api_v1_users_me_notification_settings_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/NotificationSettingsIO"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   },
+   "put": {
+    "tags": [
+     "profile"
+    ],
+    "summary": "Put Notification Settings",
+    "operationId": "put_notification_settings_api_v1_users_me_notification_settings_put",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/NotificationSettingsIO"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/NotificationSettingsIO"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
   "/api/v1/resumes": {
    "get": {
     "tags": [
@@ -1007,6 +1077,56 @@
       "content": {
        "application/json": {
         "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/jobs/{job_id}": {
+   "get": {
+    "tags": [
+     "jobs"
+    ],
+    "summary": "Get Job",
+    "description": "Job detail: posting + heuristic/AI extraction + my match + tracking.",
+    "operationId": "get_job_api_v1_jobs__job_id__get",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "job_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Job Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object",
+         "additionalProperties": true,
+         "title": "Response Get Job Api V1 Jobs  Job Id  Get"
+        }
        }
       }
      },
@@ -1589,6 +1709,204 @@
     }
    }
   },
+  "/api/v1/applications/{application_id}/apply": {
+   "post": {
+    "tags": [
+     "applications"
+    ],
+    "summary": "Auto Apply",
+    "description": "Compliance gate for automated application.\n\nAutomation is only ever permitted for OFFICIAL_API /\nUSER_AUTHORIZED_AUTOMATION connectors that opt in \u2014 everything else gets\na 409 with the manual-apply URL. Permitted sources return 501 until the\nper-ATS submitter ships; this endpoint never fakes a submission.",
+    "operationId": "auto_apply_api_v1_applications__application_id__apply_post",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "application_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Application Id"
+      }
+     }
+    ],
+    "responses": {
+     "202": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/documents": {
+   "post": {
+    "tags": [
+     "documents"
+    ],
+    "summary": "Generate Document",
+    "operationId": "generate_document_api_v1_documents_post",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/GenerateIn"
+       }
+      }
+     }
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/DocumentOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "get": {
+    "tags": [
+     "documents"
+    ],
+    "summary": "List Documents",
+    "operationId": "list_documents_api_v1_documents_get",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "job_id",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string",
+         "format": "uuid"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Job Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/DocumentOut"
+         },
+         "title": "Response List Documents Api V1 Documents Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/documents/{document_id}": {
+   "get": {
+    "tags": [
+     "documents"
+    ],
+    "summary": "Get Document",
+    "operationId": "get_document_api_v1_documents__document_id__get",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "document_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Document Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/DocumentOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
   "/api/v1/assistant/conversations": {
    "get": {
     "tags": [
@@ -1867,6 +2185,294 @@
        "application/json": {
         "schema": {
          "$ref": "#/components/schemas/TrendsOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/admin/schedules": {
+   "get": {
+    "tags": [
+     "admin"
+    ],
+    "summary": "List Schedules",
+    "operationId": "list_schedules_api_v1_admin_schedules_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/ScheduleOut"
+         },
+         "type": "array",
+         "title": "Response List Schedules Api V1 Admin Schedules Get"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/api/v1/admin/schedules/{task_key}": {
+   "patch": {
+    "tags": [
+     "admin"
+    ],
+    "summary": "Update Schedule",
+    "operationId": "update_schedule_api_v1_admin_schedules__task_key__patch",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "task_key",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Task Key"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SchedulePatch"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ScheduleOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/admin/schedules/{task_key}/run": {
+   "post": {
+    "tags": [
+     "admin"
+    ],
+    "summary": "Run Schedule Now",
+    "operationId": "run_schedule_now_api_v1_admin_schedules__task_key__run_post",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "task_key",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Task Key"
+      }
+     }
+    ],
+    "responses": {
+     "202": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/admin/runs": {
+   "get": {
+    "tags": [
+     "admin"
+    ],
+    "summary": "List Runs",
+    "operationId": "list_runs_api_v1_admin_runs_get",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "task_key",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Task Key"
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "maximum": 200,
+       "default": 50,
+       "title": "Limit"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/RunOut"
+         },
+         "title": "Response List Runs Api V1 Admin Runs Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/v1/admin/connectors": {
+   "get": {
+    "tags": [
+     "admin"
+    ],
+    "summary": "List Connectors",
+    "operationId": "list_connectors_api_v1_admin_connectors_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/ConnectorOut"
+         },
+         "type": "array",
+         "title": "Response List Connectors Api V1 Admin Connectors Get"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/api/v1/admin/connectors/{connector_id}": {
+   "patch": {
+    "tags": [
+     "admin"
+    ],
+    "summary": "Update Connector",
+    "operationId": "update_connector_api_v1_admin_connectors__connector_id__patch",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "connector_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Connector Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ConnectorPatch"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ConnectorOut"
         }
        }
       }
@@ -2218,6 +2824,69 @@
     ],
     "title": "CompanyCount"
    },
+   "ConnectorOut": {
+    "properties": {
+     "connector_id": {
+      "type": "string",
+      "title": "Connector Id"
+     },
+     "display_name": {
+      "type": "string",
+      "title": "Display Name"
+     },
+     "compliance_mode": {
+      "type": "string",
+      "title": "Compliance Mode"
+     },
+     "enabled": {
+      "type": "boolean",
+      "title": "Enabled"
+     },
+     "rate_limit_per_min": {
+      "type": "integer",
+      "title": "Rate Limit Per Min"
+     }
+    },
+    "type": "object",
+    "required": [
+     "connector_id",
+     "display_name",
+     "compliance_mode",
+     "enabled",
+     "rate_limit_per_min"
+    ],
+    "title": "ConnectorOut"
+   },
+   "ConnectorPatch": {
+    "properties": {
+     "enabled": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Enabled"
+     },
+     "rate_limit_per_min": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 600.0,
+        "minimum": 0.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Rate Limit Per Min"
+     }
+    },
+    "type": "object",
+    "title": "ConnectorPatch"
+   },
    "ConversationDetail": {
     "properties": {
      "id": {
@@ -2477,6 +3146,63 @@
     ],
     "title": "DayCount"
    },
+   "DocumentOut": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "job_id": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "uuid"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Job Id"
+     },
+     "doc_type": {
+      "type": "string",
+      "title": "Doc Type"
+     },
+     "content_md": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Content Md"
+     },
+     "model": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Model"
+     },
+     "created_at": {
+      "title": "Created At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "doc_type",
+     "created_at"
+    ],
+    "title": "DocumentOut"
+   },
    "ForgotIn": {
     "properties": {
      "email": {
@@ -2508,6 +3234,44 @@
      "count"
     ],
     "title": "FunnelEntry"
+   },
+   "GenerateIn": {
+    "properties": {
+     "job_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Job Id"
+     },
+     "doc_type": {
+      "type": "string",
+      "enum": [
+       "TAILORED_RESUME",
+       "COVER_LETTER",
+       "RECRUITER_EMAIL",
+       "LINKEDIN_MESSAGE",
+       "COLD_EMAIL"
+      ],
+      "title": "Doc Type"
+     },
+     "resume_id": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "uuid"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Resume Id"
+     }
+    },
+    "type": "object",
+    "required": [
+     "job_id",
+     "doc_type"
+    ],
+    "title": "GenerateIn"
    },
    "HTTPValidationError": {
     "properties": {
@@ -2918,6 +3682,47 @@
      "created_at"
     ],
     "title": "MessageOut"
+   },
+   "NotificationSettingsIO": {
+    "properties": {
+     "email_enabled": {
+      "type": "boolean",
+      "title": "Email Enabled",
+      "default": true
+     },
+     "daily_report_hour": {
+      "type": "integer",
+      "maximum": 23.0,
+      "minimum": 0.0,
+      "title": "Daily Report Hour",
+      "default": 21
+     },
+     "slack_webhook": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Slack Webhook"
+     },
+     "discord_webhook": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Discord Webhook"
+     }
+    },
+    "type": "object",
+    "title": "NotificationSettingsIO",
+    "description": "GET returns webhooks masked; PUT treats masked values as 'unchanged'\nand empty strings as 'clear'."
    },
    "PreferencesIO-Input": {
     "properties": {
@@ -3513,6 +4318,128 @@
      "updated_at"
     ],
     "title": "ResumeOut"
+   },
+   "RunOut": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "task_key": {
+      "type": "string",
+      "title": "Task Key"
+     },
+     "status": {
+      "type": "string",
+      "title": "Status"
+     },
+     "started_at": {
+      "title": "Started At"
+     },
+     "finished_at": {
+      "anyOf": [
+       {},
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Finished At"
+     },
+     "stats": {
+      "additionalProperties": true,
+      "type": "object",
+      "title": "Stats",
+      "default": {}
+     },
+     "error": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Error"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "task_key",
+     "status",
+     "started_at"
+    ],
+    "title": "RunOut"
+   },
+   "ScheduleOut": {
+    "properties": {
+     "key": {
+      "type": "string",
+      "title": "Key"
+     },
+     "cron": {
+      "type": "string",
+      "title": "Cron"
+     },
+     "timezone": {
+      "type": "string",
+      "title": "Timezone"
+     },
+     "enabled": {
+      "type": "boolean",
+      "title": "Enabled"
+     },
+     "description": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Description"
+     }
+    },
+    "type": "object",
+    "required": [
+     "key",
+     "cron",
+     "timezone",
+     "enabled"
+    ],
+    "title": "ScheduleOut"
+   },
+   "SchedulePatch": {
+    "properties": {
+     "cron": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 64,
+        "minLength": 9
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Cron"
+     },
+     "enabled": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Enabled"
+     }
+    },
+    "type": "object",
+    "title": "SchedulePatch"
    },
    "SearchRunOut": {
     "properties": {

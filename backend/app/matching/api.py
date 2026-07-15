@@ -1,2 +1,5 @@
-"""Public facade of the matching module — the ONLY import surface for other
-modules (enforced by import-linter). Implemented in its feature phase."""
+"""Public facade of the matching module."""
+from .models import MatchScore
+from .service import score_jobs_for_user
+
+__all__ = ["MatchScore", "score_jobs_for_user"]

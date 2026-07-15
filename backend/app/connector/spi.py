@@ -115,15 +115,38 @@ def guess_employment(text: str | None, fallback: str = "UNKNOWN") -> str:
     return fallback
 
 
-def guess_arrangement(text: str | None) -> str:
+# "No C2C", "C2C not accepted", "W2 only" must NOT classify as C2C.
+_NEG_C2C = re.compile(
+    r"\b(?:no|not|without|cannot|can't|won't|don'?t)\s+(?:accept\w*\s+|work\s+with\s+|do\s+)?"
+    r"(?:c2c|corp[\s-]*to[\s-]*corp|third[\s-]*party)", re.I)
+_W2_ONLY = re.compile(r"\bw[\s-]?2\s*(?:only|basis|candidates?\s+only)\b", re.I)
+
+
+def guess_arrangement(text: str | None, employment_raw: str | None = None) -> str:
+    """Classify W2 / 1099 / C2C.
+
+    The source's own employment-type field (e.g. Dice's
+    'Contract Corp-To-Corp, Contract W2') is authoritative when present;
+    free text is only consulted after negations are handled — many postings
+    mention C2C precisely to say they DON'T take it."""
+    if employment_raw:
+        raw = employment_raw.lower()
+        if _C2C.search(raw):
+            return "C2C"
+        if _1099.search(raw) or "independent" in raw:
+            return "C1099"
+        if _W2.search(raw):
+            return "W2"
+
     if not text:
         return "UNSPECIFIED"
-    c2c, w2, ten99 = bool(_C2C.search(text)), bool(_W2.search(text)), bool(_1099.search(text))
+    negated_c2c = bool(_NEG_C2C.search(text) or _W2_ONLY.search(text))
+    c2c = bool(_C2C.search(text)) and not negated_c2c
     if c2c:
         return "C2C"
-    if ten99:
+    if _1099.search(text):
         return "C1099"
-    if w2:
+    if _W2.search(text) or negated_c2c:
         return "W2"
     return "UNSPECIFIED"
 

@@ -500,6 +500,8 @@ INSERT INTO connector_settings (connector_id, display_name, compliance_mode, rat
     ('jooble',          'Jooble API',                 'OFFICIAL_API', 25),
     ('usajobs',         'USAJOBS API',                'OFFICIAL_API', 30),
     ('dice',            'Dice public search feed',    'PUBLIC_FEED',  20),
+    ('remoteok',        'RemoteOK public API',        'PUBLIC_FEED',  10),
+    ('remotive',        'Remotive public API',        'PUBLIC_FEED',  10),
     ('workday',         'Workday tenant feeds',       'PUBLIC_FEED',  20),
     ('careers_page',    'Company careers pages',      'PUBLIC_FEED',  10),
     ('jobspy',          'JobSpy aggregation',         'PUBLIC_FEED',  10),

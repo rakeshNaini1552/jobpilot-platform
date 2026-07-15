@@ -92,6 +92,56 @@ async def export_jobs(session: Session, user: CurrentUser,
         headers={"Content-Disposition": "attachment; filename=jobpilot_jobs.csv"})
 
 
+@router.get("/{job_id}", response_model=dict)
+async def get_job(job_id: str, session: Session, user: CurrentUser):
+    """Job detail: posting + heuristic/AI extraction + my match + tracking."""
+    import uuid as _uuid
+
+    from app.application.api import Application
+    from app.matching.api import MatchScore
+
+    from .models import Company, JobExtraction
+    from .schemas import JobOut
+
+    try:
+        jid = _uuid.UUID(job_id)
+    except ValueError:
+        raise Problem(404, "Job not found", type_suffix="not-found") from None
+    job = await session.get(Job, jid)
+    if job is None:
+        raise Problem(404, "Job not found", type_suffix="not-found")
+
+    extraction = await session.get(JobExtraction, jid)
+    company = await session.get(Company, job.company_id) if job.company_id else None
+    match = await session.scalar(
+        select(MatchScore).where(MatchScore.user_id == user.id,
+                                 MatchScore.job_id == jid)
+        .order_by(MatchScore.created_at.desc()))
+    application = await session.scalar(
+        select(Application).where(Application.user_id == user.id,
+                                  Application.job_id == jid,
+                                  Application.deleted_at.is_(None)))
+
+    return {
+        **JobOut.model_validate(job).model_dump(mode="json"),
+        "description_md": job.description_md,
+        "company": {"id": str(company.id), "name": company.name} if company else None,
+        "extraction": {
+            "skills": extraction.skills, "tech_stack": extraction.tech_stack,
+            "sponsorship": extraction.sponsorship, "seniority": extraction.seniority,
+            "recruiter_name": extraction.recruiter_name,
+            "recruiter_contact": extraction.recruiter_contact,
+            "method": extraction.method,
+        } if extraction else None,
+        "match": {
+            "overall": float(match.overall), "resume_pct": float(match.resume_pct or 0),
+            "ats_pct": float(match.ats_pct or 0), "skill_gap": match.skill_gap,
+            "reasoning": match.reasoning,
+        } if match else None,
+        "application_id": str(application.id) if application else None,
+    }
+
+
 @runs_router.post("", response_model=SearchRunOut, status_code=202)
 async def trigger_search_run(user: CurrentUser):
     from app.ingestion.tasks import run_ingestion_for_user

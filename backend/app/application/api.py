@@ -1,2 +1,4 @@
-"""Public facade of the application module — the ONLY import surface for other
-modules (enforced by import-linter). Implemented in its feature phase."""
+"""Public facade of the application module."""
+from .models import Application, ApplicationEvent
+
+__all__ = ["Application", "ApplicationEvent"]

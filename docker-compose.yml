@@ -1,0 +1,101 @@
+# JobPilot — the whole platform with one command:  docker compose up -d
+# Web UI on http://localhost:8080 (register there; first account is admin).
+#
+# Optional local AI:      docker compose --profile ollama up -d
+#   then:                 docker compose exec ollama ollama pull llama3.2
+# Secrets & providers:    put overrides in .env next to this file
+#   (JOBPILOT_JWT_SECRET / MASTER_KEY are REQUIRED in real deployments).
+
+name: jobpilot
+
+x-backend-env: &backend-env
+  JOBPILOT_ENV: docker
+  JOBPILOT_DATABASE_URL: postgresql+psycopg://jobpilot:${POSTGRES_PASSWORD:-jobpilot}@db:5432/jobpilot
+  JOBPILOT_REDIS_URL: redis://redis:6379/0
+  JOBPILOT_JWT_SECRET: ${JOBPILOT_JWT_SECRET:-dev-only-change-me}
+  JOBPILOT_MASTER_KEY: ${JOBPILOT_MASTER_KEY:-dev-only-master-key-32-bytes!!}
+  JOBPILOT_OLLAMA_BASE_URL: http://ollama:11434
+  JOBPILOT_OPENROUTER_API_KEY: ${JOBPILOT_OPENROUTER_API_KEY:-}
+  JOBPILOT_GEMINI_API_KEY: ${JOBPILOT_GEMINI_API_KEY:-}
+  JOBPILOT_ANTHROPIC_API_KEY: ${JOBPILOT_ANTHROPIC_API_KEY:-}
+  JOBPILOT_OPENAI_API_KEY: ${JOBPILOT_OPENAI_API_KEY:-}
+  JOBPILOT_SMTP_HOST: ${JOBPILOT_SMTP_HOST:-}
+  JOBPILOT_SMTP_PORT: ${JOBPILOT_SMTP_PORT:-465}
+  JOBPILOT_SMTP_USER: ${JOBPILOT_SMTP_USER:-}
+  JOBPILOT_SMTP_PASSWORD: ${JOBPILOT_SMTP_PASSWORD:-}
+  JOBPILOT_SMTP_FROM: ${JOBPILOT_SMTP_FROM:-jobpilot@localhost}
+  JOBPILOT_LOG_JSON: "true"
+
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: jobpilot
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-jobpilot}
+      POSTGRES_DB: jobpilot
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jobpilot -d jobpilot"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+  api:
+    build: ./backend
+    environment: *backend-env
+    depends_on:
+      db: {condition: service_healthy}
+      redis: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD", "python", "-c",
+             "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/health', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    ports:
+      - "8000:8000"          # direct API access (docs at /api/v1/docs); optional
+
+  worker:
+    build: ./backend
+    command: celery -A app.worker.celery_app worker -l info -Q default,ingest,ai,notify --concurrency=2
+    environment: *backend-env
+    depends_on:
+      api: {condition: service_healthy}
+
+  beat:
+    build: ./backend
+    command: celery -A app.worker.celery_app beat -l info
+    environment: *backend-env
+    depends_on:
+      api: {condition: service_healthy}
+
+  frontend:
+    build: ./frontend
+    depends_on:
+      api: {condition: service_healthy}
+    ports:
+      - "8080:80"
+
+  ollama:
+    image: ollama/ollama:latest
+    profiles: ["ollama"]
+    volumes:
+      - ollamadata:/root/.ollama
+    ports:
+      - "11434:11434"
+
+volumes:
+  pgdata:
+  redisdata:
+  ollamadata:

@@ -118,11 +118,14 @@ def upsert_job(session: Session, posting: RawPosting) -> tuple[Job, bool]:
         workplace=guess_workplace(posting.location_text + " " + posting.description_md,
                                   posting.is_remote),
         employment=guess_employment(posting.employment_raw or text),
-        arrangement=guess_arrangement(text),
+        arrangement=guess_arrangement(text, posting.employment_raw),
         salary_min=posting.salary_min, salary_max=posting.salary_max,
         salary_currency=posting.salary_currency, salary_period=posting.salary_period,
         posted_at=_parse_dt(posting.posted_at),
-        raw=posting.raw or {},
+        # keep the source's own employment field for audits/reclassification
+        raw={**(posting.raw or {}),
+             **({"employment_raw": posting.employment_raw}
+                if posting.employment_raw else {})},
     )
     session.add(job)
     session.flush()
